@@ -211,7 +211,7 @@ class Map extends React.Component {
         })
 
         popup.update()
-      }, 20) //eslint-disable-line
+      }, 20)
     })
 
     this.map.on('click', (event) => {
@@ -230,7 +230,7 @@ class Map extends React.Component {
             latLng: event.latlng,
           })
           popup.update()
-        }, 20) //eslint-disable-line
+        }, 20)
       }
     })
 
@@ -783,7 +783,7 @@ class Map extends React.Component {
         this.setState({ locate: data, isLocateLoading: false })
       })
       .catch(({ response }) => {
-        console.log(response) //eslint-disable-line
+        console.log(response)
       })
   }
 
@@ -833,7 +833,7 @@ class Map extends React.Component {
           this.hg.addData(heightData)
         })
         .catch(({ response }) => {
-          console.log(response) //eslint-disable-line
+          console.log(response)
         })
     }
   }
@@ -861,7 +861,7 @@ class Map extends React.Component {
         }
       })
       .catch(({ response }) => {
-        console.log(response) //eslint-disable-line
+        console.log(response)
       })
   }
 

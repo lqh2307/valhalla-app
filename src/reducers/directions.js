@@ -131,7 +131,6 @@ export const directions = (state = initialState, action) => {
 
     case UPDATE_TEXTINPUT:
       // Catch array of selectedAddress from all waypoints
-      // eslint-disable-next-line no-case-declarations
       const selectedAddresses = []
       state.waypoints.forEach((waypoint) => {
         waypoint.geocodeResults.forEach((result, i) => {

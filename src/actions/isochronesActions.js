@@ -161,7 +161,7 @@ export const fetchReverseGeocodeIso = (lng, lat) => (dispatch) => {
       dispatch(processGeocodeResponse(response.data, true, [lng, lat]))
     })
     .catch((error) => {
-      console.log(error) //eslint-disable-line
+      console.log(error)
     })
   // .finally(() => {
   //   // always executed
@@ -196,7 +196,7 @@ export const fetchGeocode = (userInput, lngLat) => (dispatch) => {
         dispatch(processGeocodeResponse(response.data))
       })
       .catch((error) => {
-        console.log(error) //eslint-disable-line
+        console.log(error)
       })
   }
 }

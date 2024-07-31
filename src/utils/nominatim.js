@@ -6,7 +6,6 @@ export const NOMINATIME_URL_REVERSE = `${window.REACT_APP_NOMINATIM_URL}/reverse
 export const forward_geocode = (userInput) =>
   axios.get(NOMINATIM_URL, {
     params: {
-      // eslint-disable-next-line
       q: userInput,
       format: 'json',
       limit: 5,

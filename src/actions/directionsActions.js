@@ -178,7 +178,7 @@ export const fetchReverseGeocodePerma = (object) => (dispatch) => {
       )
     })
     .catch((error) => {
-      console.log(error) //eslint-disable-line
+      console.log(error)
     })
   // .finally(() => {
   //   // always executed
@@ -211,7 +211,7 @@ export const fetchReverseGeocode = (object) => (dispatch, getState) => {
       dispatch(processGeocodeResponse(response.data, index, true, [lng, lat]))
     })
     .catch((error) => {
-      console.log(error) //eslint-disable-line
+      console.log(error)
     })
   // .finally(() => {
   //   // always executed
@@ -241,7 +241,7 @@ export const fetchGeocode = (object) => (dispatch) => {
         dispatch(processGeocodeResponse(response.data, object.index))
       })
       .catch((error) => {
-        console.log(error) //eslint-disable-line
+        console.log(error)
       })
       .finally(() => {})
   }

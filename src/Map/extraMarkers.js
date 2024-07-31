@@ -1,4 +1,3 @@
-/* eslint-disable */
 import * as L from 'leaflet'
 
 const ExtraMarkers = {}

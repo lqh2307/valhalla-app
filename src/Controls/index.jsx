@@ -56,7 +56,7 @@ class MainControl extends React.Component {
     this.getLastUpdate()
 
     toast.success(
-      'Welcome to Valhalla! Global Routing Service - funded by FOSSGIS e.V.',
+      'Welcome to Routing Service App',
       {
         position: 'bottom-center',
         autoClose: 5000,
