@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Header, Icon, Divider, Popup } from 'semantic-ui-react'
-
 import { highlightManeuver, zoomToManeuver } from 'actions/directionsActions'
 
 const getLength = (length) => {

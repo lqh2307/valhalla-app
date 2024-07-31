@@ -1,4 +1,4 @@
-import * as turf from 'turf'
+import * as turf from "@turf/turf"
 
 export const calcArea = (feature) => {
   try {

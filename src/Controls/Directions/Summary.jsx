@@ -1,12 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-
 import { Icon, Checkbox, Popup } from 'semantic-ui-react'
 import { showProvider } from '../../actions/directionsActions'
-
 import formatDuration from 'utils/date_time'
 import { VALHALLA_OSM_URL } from 'utils/valhalla'
+
 class Summary extends React.Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,

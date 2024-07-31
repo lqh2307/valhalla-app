@@ -9,10 +9,8 @@ import {
   makeRequest,
   isWaypoint,
 } from 'actions/directionsActions'
-
 import { zoomTo } from 'actions/commonActions'
 import { isValidCoordinates } from 'utils/geom'
-
 import { debounce } from 'throttle-debounce'
 
 class Waypoint extends React.Component {

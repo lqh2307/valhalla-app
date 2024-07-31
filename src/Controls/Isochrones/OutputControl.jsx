@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Segment, Divider } from 'semantic-ui-react'
-
 import Summary from './Summary'
 import { makeIsochronesRequest } from 'actions/isochronesActions'
 import ContoursInformation from './ContoursInformation'

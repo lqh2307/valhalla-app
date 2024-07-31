@@ -6,7 +6,6 @@ import { ProfilePicker } from 'components/profile-picker'
 import { SettingsButton } from 'components/SettingsButton'
 import { Settings } from './settings'
 import { DateTimePicker } from 'components/DateTimePicker'
-
 import {
   doAddWaypoint,
   doRemoveWaypoint,

@@ -1,12 +1,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-
 import { Search, Form, Popup, Icon, Label, Accordion } from 'semantic-ui-react'
 import { Slider } from '@mui/material'
-
 import { Settings } from '../settings'
-
 import { isValidCoordinates } from 'utils/geom'
 import {
   updateTextInput,
@@ -15,15 +12,12 @@ import {
   makeIsochronesRequest,
   clearIsos,
 } from 'actions/isochronesActions'
-
 import {
   denoise as denoiseParam,
   generalize as generalizeParam,
   settingsInit,
 } from 'Controls/settings-options'
-
 import { updatePermalink, zoomTo } from 'actions/commonActions'
-
 import { debounce } from 'throttle-debounce'
 
 class Waypoints extends Component {

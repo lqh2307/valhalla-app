@@ -6,7 +6,6 @@ import {
   settingsInit,
   settingsInitTruckOverride,
 } from 'Controls/settings-options'
-
 import PropTypes from 'prop-types'
 
 const CustomSlider = (props) => {

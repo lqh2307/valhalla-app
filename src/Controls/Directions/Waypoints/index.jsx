@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { connect } from 'react-redux'
-
 import Waypoint from './Waypoint'
 import {
   doAddWaypoint,

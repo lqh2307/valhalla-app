@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Segment, Button, Icon } from 'semantic-ui-react'
 import L from 'leaflet'
-
 import { makeRequest } from 'actions/directionsActions'
 import { downloadFile } from 'actions/commonActions'
 import Summary from './Summary'

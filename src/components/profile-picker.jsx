@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Button, Popup } from 'semantic-ui-react'
-
 import { ReactComponent as BusSvg } from 'images/bus.svg'
 import { ReactComponent as ScooterSvg } from 'images/scooter.svg'
 import { ReactComponent as CarSvg } from 'images/car.svg'

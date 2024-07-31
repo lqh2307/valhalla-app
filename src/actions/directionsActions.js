@@ -243,7 +243,7 @@ export const fetchGeocode = (object) => (dispatch) => {
       .catch((error) => {
         console.log(error)
       })
-      .finally(() => {})
+      .finally(() => { })
   }
 }
 

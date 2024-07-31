@@ -25,7 +25,6 @@ import {
   filterProfileSettings,
   resetSettings,
 } from 'actions/commonActions'
-
 import CustomSlider from '../components/CustomSlider'
 import { makeRequest } from 'actions/directionsActions'
 import { makeIsochronesRequest } from 'actions/isochronesActions'

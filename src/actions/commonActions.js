@@ -166,5 +166,6 @@ export const filterProfileSettings = (profile, settings) => {
       }
     }
   }
+
   return filteredSettings
 }
