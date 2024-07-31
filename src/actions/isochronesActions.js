@@ -68,7 +68,9 @@ const fetchValhallaIsochrones = (valhallaRequest) => (dispatch, getState) => {
   for (const URL of [VALHALLA_OSM_URL]) {
     axios
       .get(URL + '/isochrone', {
-        params: { json: JSON.stringify(valhallaRequest.json) },
+        params: {
+          json: JSON.stringify(valhallaRequest.json),
+        },
         headers: {
           'Content-Type': 'application/json',
         },

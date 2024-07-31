@@ -5,15 +5,12 @@ import L from 'leaflet'
 import * as $ from 'jquery'
 import 'jquery-ui-bundle'
 import 'jquery-ui-bundle/jquery-ui.css'
-
 import '@geoman-io/leaflet-geoman-free'
 import '@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css'
 import 'leaflet.heightgraph'
 import 'leaflet.heightgraph/dist/L.Control.Heightgraph.min.css'
-
 import PropTypes from 'prop-types'
 import axios from 'axios'
-
 import * as R from 'ramda'
 import ExtraMarkers from './extraMarkers'
 import { Button, Label, Icon, Popup } from 'semantic-ui-react'
@@ -33,20 +30,18 @@ import {
 import { colorMappings, buildHeightgraphData } from 'utils/heightgraph'
 import formatDuration from 'utils/date_time'
 import './Map.css'
-const OSMTiles = L.tileLayer(process.env.REACT_APP_TILE_SERVER_URL, {
-  attribution:
-    '<a href="https://map.project-osrm.org/about.html" target="_blank">About this service and privacy policy</a> | &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-})
+
+const OSMTiles = L.tileLayer(window.REACT_APP_TILE_SERVER_URL)
 
 const convertDDToDMS = (decimalDegrees) =>
   [
     0 | decimalDegrees,
     '° ',
     0 |
-      (((decimalDegrees =
-        (decimalDegrees < 0 ? -decimalDegrees : decimalDegrees) + 1e-4) %
-        1) *
-        60),
+    (((decimalDegrees =
+      (decimalDegrees < 0 ? -decimalDegrees : decimalDegrees) + 1e-4) %
+      1) *
+      60),
     "' ",
     0 | (((decimalDegrees * 60) % 1) * 60),
     '"',
@@ -62,7 +57,7 @@ const highlightRouteSegmentlayer = L.featureGroup()
 const highlightRouteIndexLayer = L.featureGroup()
 const excludePolygonsLayer = L.featureGroup()
 
-const centerCoords = process.env.REACT_APP_CENTER_COORDS.split(',')
+const centerCoords = window.REACT_APP_CENTER_COORDS.split(',')
 let center = [parseFloat(centerCoords[0]), parseFloat(centerCoords[1])]
 let zoom_initial = 10
 
@@ -72,14 +67,14 @@ if (localStorage.getItem('last_center')) {
   zoom_initial = last_center.zoom_level
 }
 
-const maxBoundsString = process.env.REACT_APP_MAX_BOUNDS?.split(',')
+const maxBoundsString = window.REACT_APP_MAX_BOUNDS?.split(',')
 const maxBounds = maxBoundsString
   ? [
-      //south west corner
-      [parseFloat(maxBoundsString[0]), parseFloat(maxBoundsString[1])],
-      //north east corner
-      [parseFloat(maxBoundsString[2]), parseFloat(maxBoundsString[3])],
-    ]
+    //south west corner
+    [parseFloat(maxBoundsString[0]), parseFloat(maxBoundsString[1])],
+    //north east corner
+    [parseFloat(maxBoundsString[2]), parseFloat(maxBoundsString[3])],
+  ]
   : undefined
 
 // a leaflet map consumes parameters, I'd say they are quite self-explanatory
@@ -775,11 +770,15 @@ class Map extends React.Component {
     const { profile } = this.props
     this.setState({ isLocateLoading: true })
     axios
-      .post(VALHALLA_OSM_URL + '/locate', buildLocateRequest(latlng, profile), {
+      .get(VALHALLA_OSM_URL + '/locate', {
+        params: {
+          json: JSON.stringify(buildLocateRequest(latlng, profile)),
+        },
         headers: {
           'Content-Type': 'application/json',
         },
-      })
+      }
+      )
       .then(({ data }) => {
         this.setState({ locate: data, isLocateLoading: false })
       })
@@ -798,9 +797,15 @@ class Map extends React.Component {
 
     if (!R.equals(this.state.heightPayload, heightPayload)) {
       this.hg._removeChart()
-      this.setState({ isHeightLoading: true, heightPayload })
+      this.setState({
+        isHeightLoading: true,
+        heightPayload,
+      })
       axios
-        .post(VALHALLA_OSM_URL + '/height', heightPayload, {
+        .get(VALHALLA_OSM_URL + '/height', {
+          params: {
+            json: JSON.stringify(heightPayload),
+          },
           headers: {
             'Content-Type': 'application/json',
           },
@@ -834,16 +839,18 @@ class Map extends React.Component {
   }
 
   getHeight(latLng) {
-    this.setState({ isHeightLoading: true })
+    this.setState({
+      isHeightLoading: true,
+    })
     axios
-      .post(
-        VALHALLA_OSM_URL + '/height',
-        buildHeightRequest([[latLng.lat, latLng.lng]]),
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
+      .get(VALHALLA_OSM_URL + '/height', {
+        params: {
+          json: JSON.stringify(buildHeightRequest([[latLng.lat, latLng.lng]])),
+        },
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
       )
       .then(({ data }) => {
         if ('height' in data) {
@@ -1125,9 +1132,9 @@ class Map extends React.Component {
         <div>
           {this.state.showPopup && leafletPopupDiv
             ? ReactDOM.createPortal(
-                MapPopup(this.state.showInfoPopup),
-                leafletPopupDiv
-              )
+              MapPopup(this.state.showInfoPopup),
+              leafletPopupDiv
+            )
             : null}
         </div>
       </React.Fragment>
