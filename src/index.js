@@ -1,6 +1,5 @@
 import React from 'react'
 import { render } from 'react-dom'
-
 import { createStore, applyMiddleware } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import { Provider } from 'react-redux'

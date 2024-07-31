@@ -1,14 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { Divider } from 'semantic-ui-react'
-
 import Waypoints from './Waypoints'
-
 import { ProfilePicker } from '../../components/profile-picker'
 import { SettingsButton } from '../../components/SettingsButton'
-import { SettingsFooter } from 'components/SettingsFooter'
-
 import {
   updateProfile,
   doShowSettings,
@@ -79,8 +74,6 @@ class IsochronesControl extends React.Component {
             <SettingsButton handleSettings={this.handleSettings} />
           </div>
           <Waypoints />
-          <Divider fitted />
-          <SettingsFooter />
         </div>
       </React.Fragment>
     )

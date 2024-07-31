@@ -1121,13 +1121,6 @@ class Map extends React.Component {
             theme="light"
           />
           <div id="map" className="map-style" />
-          <button
-            className="ui primary button"
-            id="osm-button"
-            onClick={this.handleOpenOSM}
-          >
-            Open OSM
-          </button>
         </div>
         <div>
           {this.state.showPopup && leafletPopupDiv

@@ -1,14 +1,20 @@
-FROM node:16.17.0-alpine as builder
-WORKDIR /app
-ENV PATH /app/node_modules/.bin:$PATH
-COPY . /app
-RUN npm i
+FROM node:22-alpine3.19 AS builder
 
-ENV NODE_ENV production
+ARG http_proxy=http://10.55.123.98:3333
+ARG https_proxy=http://10.55.123.98:3333
+
+WORKDIR /app
+
+COPY . .
+
+RUN npm i
 RUN npm run build
 
-# production environment
-FROM nginx:1.23.2-alpine
+
+FROM nginx:1.27.0-alpine AS runner
+
 COPY --from=builder /app/build /usr/share/nginx/html
+
 EXPOSE 80
+
 CMD ["nginx", "-g", "daemon off;"]
