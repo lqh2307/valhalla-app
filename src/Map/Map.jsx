@@ -768,7 +768,9 @@ class Map extends React.Component {
 
   getLocate(latlng) {
     const { profile } = this.props
-    this.setState({ isLocateLoading: true })
+    this.setState({
+      isLocateLoading: true,
+    })
     axios
       .get(VALHALLA_OSM_URL + '/locate', {
         params: {
@@ -777,10 +779,12 @@ class Map extends React.Component {
         headers: {
           'Content-Type': 'application/json',
         },
-      }
-      )
+      })
       .then(({ data }) => {
-        this.setState({ locate: data, isLocateLoading: false })
+        this.setState({
+          locate: data,
+          isLocateLoading: false,
+        })
       })
       .catch(({ response }) => {
         console.log(response)
