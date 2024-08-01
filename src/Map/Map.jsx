@@ -102,8 +102,8 @@ const mapParams = {
 
 const routeObjects = {
   [VALHALLA_OSM_URL]: {
-    color: '#cc0000',
-    alternativeColor: '#ea9898',
+    color: '#0066ff',
+    alternativeColor: '#66a3ff',
     name: 'OSM',
   },
 }
