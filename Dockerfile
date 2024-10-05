@@ -1,4 +1,4 @@
-FROM node:22-alpine3.19 AS builder
+FROM node:22.9-alpine3.19 AS builder
 
 # ARG http_proxy=http://10.55.123.98:3333
 # ARG https_proxy=http://10.55.123.98:3333
@@ -11,7 +11,7 @@ RUN npm install --omit=dev
 RUN npm run build
 
 
-FROM nginx:1.27.0-alpine AS runner
+FROM nginx:1.27.2-alpine AS runner
 
 COPY --from=builder /app/build /usr/share/nginx/html
 

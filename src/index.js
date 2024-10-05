@@ -1,9 +1,9 @@
 import React from 'react'
 import { render } from 'react-dom'
 import { createStore, applyMiddleware } from 'redux'
-import { composeWithDevTools } from 'redux-devtools-extension'
+import { composeWithDevTools } from '@redux-devtools/extension';
 import { Provider } from 'react-redux'
-import thunk from 'redux-thunk'
+import { thunk } from 'redux-thunk';
 
 import reducer from './reducers'
 import App from './App'
@@ -21,5 +21,5 @@ render(
     {' '}
     <App />
   </Provider>,
-  document.getElementById('valhalla-app-root')
+  document.getElementById('root')
 )
