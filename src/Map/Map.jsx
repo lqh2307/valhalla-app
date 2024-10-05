@@ -908,14 +908,6 @@ class Map extends React.Component {
     }
   }
 
-  handleOpenOSM = () => {
-    const { map } = this
-    const { lat, lng } = map.getCenter()
-    const zoom = map.getZoom()
-    const osmURL = `https://www.openstreetmap.org/#map=${zoom}/${lat}/${lng}`
-    window.open(osmURL, '_blank')
-  }
-
   render() {
     const { activeTab } = this.props
     const MapPopup = (isInfo) => {
@@ -923,35 +915,6 @@ class Map extends React.Component {
         <React.Fragment>
           {isInfo ? (
             <React.Fragment>
-              <div>
-                <Button.Group basic size="tiny">
-                  <Popup
-                    size="tiny"
-                    content="Longitude, Latitude"
-                    trigger={
-                      <Button
-                        compact
-                        content={
-                          this.state.latLng.lng.toFixed(6) +
-                          ', ' +
-                          this.state.latLng.lat.toFixed(6)
-                        }
-                      />
-                    }
-                  />
-                  <CopyToClipboard
-                    text={
-                      this.state.latLng.lng.toFixed(6) +
-                      ',' +
-                      this.state.latLng.lat.toFixed(6)
-                    }
-                    onCopy={this.handleCopy}
-                  >
-                    <Button compact icon="copy" />
-                  </CopyToClipboard>
-                </Button.Group>
-              </div>
-
               <div className="mt1 flex">
                 <Button.Group basic size="tiny">
                   <Popup
@@ -1010,7 +973,6 @@ class Map extends React.Component {
                   </CopyToClipboard>
                 </Button.Group>
               </div>
-
               <div className="mt1">
                 <Button.Group basic size="tiny">
                   <Popup
@@ -1035,30 +997,6 @@ class Map extends React.Component {
                       compact
                       icon="copy"
                     />
-                  </CopyToClipboard>
-                </Button.Group>
-              </div>
-              <div className="mt1">
-                <Button.Group basic size="tiny">
-                  <Popup
-                    size="tiny"
-                    content="Copies a Valhalla location object to clipboard which you can use for your API requests"
-                    trigger={
-                      <Button
-                        compact
-                        icon="map marker alternate"
-                        content="Valhalla Location JSON"
-                      />
-                    }
-                  />
-                  <CopyToClipboard
-                    text={`{
-                        "lon": ${this.state.latLng.lng.toFixed(6)},
-                        "lat": ${this.state.latLng.lat.toFixed(6)}
-                      }`}
-                    onCopy={this.handleCopy}
-                  >
-                    <Button compact icon="copy" />
                   </CopyToClipboard>
                 </Button.Group>
               </div>
