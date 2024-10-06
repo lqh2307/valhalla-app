@@ -1,6 +1,6 @@
 # Valhalla App
 
-This is the Valhalla Web App running provides routing and isochrones with a magnitude of options and makes requests to [Valhalla](https://github.com/valhalla/valhalla), an open source routing engine and accompanying libraries for use with OpenStreetMap data.
+This is the Valhalla Web App provides routing and isochrones with a magnitude of options and makes requests to [Valhalla](https://github.com/valhalla/valhalla), an open source routing engine and accompanying libraries for use with OpenStreetMap data.
 
 ## Commands
 
