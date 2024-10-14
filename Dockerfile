@@ -1,13 +1,13 @@
 FROM node:22.9-alpine3.19 AS builder
 
-# ARG http_proxy=http://10.55.123.98:3333
-# ARG https_proxy=http://10.55.123.98:3333
+ARG http_proxy=http://10.55.123.98:3333
+ARG https_proxy=http://10.55.123.98:3333
 
 WORKDIR /app
 
 COPY . .
 
-RUN npm install --omit=dev
+RUN npm install
 RUN npm run build
 
 
