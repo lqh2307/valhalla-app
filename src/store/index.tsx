@@ -1,14 +1,10 @@
-import { legacy_createStore, applyMiddleware } from 'redux';
-import { composeWithDevTools } from 'redux-devtools-extension';
-import thunk from 'redux-thunk';
-
+import { configureStore } from '@reduxjs/toolkit';
 import reducer from '../reducers';
 
-const middleware = [thunk];
-
-export const store = legacy_createStore(
+export const store = configureStore({
   reducer,
-  composeWithDevTools(applyMiddleware(...middleware))
-);
+  devTools: window.NODE_ENV !== 'production',
+});
 
-export type RootState = ReturnType<typeof reducer>;
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;

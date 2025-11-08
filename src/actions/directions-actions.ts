@@ -20,13 +20,13 @@ import {
   reverse_geocode,
   forward_geocode,
   parseGeocodeResponse,
-} from '@/utils/nominatim';
+} from '../utils/nominatim';
 
 import {
-  VALHALLA_OSM_URL,
+  VALHALLA_URL,
   buildDirectionsRequest,
   parseDirectionsGeometry,
-} from '@/utils/valhalla';
+} from '../utils/valhalla';
 
 import {
   sendMessage,
@@ -42,7 +42,7 @@ import type {
   ParsedDirectionsGeometry,
   ThunkResult,
   ValhallaRouteResponse,
-} from '@/common/types';
+} from '../common/types';
 
 interface LatLng {
   lng: number;
@@ -106,7 +106,7 @@ interface ZoomObject {
 }
 
 const serverMapping: Record<string, string> = {
-  [VALHALLA_OSM_URL!]: 'OSM',
+  [VALHALLA_URL!]: 'OSM',
 };
 
 export const makeRequest = (): ThunkResult => (dispatch, getState) => {
@@ -149,60 +149,60 @@ const getActiveWaypoints = (waypoints: Waypoint[]): ActiveWaypoint[] => {
 
 const fetchValhallaDirections =
   (valhallaRequest: ValhallaRequest): ThunkResult =>
-  (dispatch) => {
-    dispatch(showLoading(true));
+    (dispatch) => {
+      dispatch(showLoading(true));
 
-    const config = {
-      params: { json: JSON.stringify(valhallaRequest.json) },
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    };
-    axios
-      .get<ValhallaRouteResponse>(VALHALLA_OSM_URL + '/route', config)
-      .then(({ data }) => {
-        (data as ParsedDirectionsGeometry).decodedGeometry =
-          parseDirectionsGeometry(data);
+      const config = {
+        params: { json: JSON.stringify(valhallaRequest.json) },
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
+      axios
+        .get<ValhallaRouteResponse>(VALHALLA_URL + '/route', config)
+        .then(({ data }) => {
+          (data as ParsedDirectionsGeometry).decodedGeometry =
+            parseDirectionsGeometry(data);
 
-        if (data.alternates) {
-          for (let i = 0; i < data.alternates.length; i++) {
-            const alternate = data.alternates[i];
+          if (data.alternates) {
+            for (let i = 0; i < data.alternates.length; i++) {
+              const alternate = data.alternates[i];
 
-            if (alternate) {
-              (data.alternates[i] as ParsedDirectionsGeometry).decodedGeometry =
-                parseDirectionsGeometry(alternate);
+              if (alternate) {
+                (data.alternates[i] as ParsedDirectionsGeometry).decodedGeometry =
+                  parseDirectionsGeometry(alternate);
+              }
             }
           }
-        }
-        dispatch(
-          registerRouteResponse(
-            VALHALLA_OSM_URL!,
-            data as ParsedDirectionsGeometry
-          )
-        );
-        dispatch(zoomTo((data as ParsedDirectionsGeometry).decodedGeometry));
-      })
-      .catch(({ response }) => {
-        let error_msg = response.data.error;
-        if (response.data.error_code === 154) {
-          error_msg += ` for ${valhallaRequest.json.costing}.`;
-        }
-        dispatch(clearRoutes(VALHALLA_OSM_URL!));
-        dispatch(
-          sendMessage({
-            type: 'warning',
-            icon: 'warning',
-            description: `${serverMapping[VALHALLA_OSM_URL!]}: ${error_msg}`,
-            title: `${response.data.status}`,
-          })
-        );
-      })
-      .finally(() => {
-        setTimeout(() => {
-          dispatch(showLoading(false));
-        }, 500);
-      });
-  };
+          dispatch(
+            registerRouteResponse(
+              VALHALLA_URL!,
+              data as ParsedDirectionsGeometry
+            )
+          );
+          dispatch(zoomTo((data as ParsedDirectionsGeometry).decodedGeometry));
+        })
+        .catch(({ response }) => {
+          let error_msg = response.data.error;
+          if (response.data.error_code === 154) {
+            error_msg += ` for ${valhallaRequest.json.costing}.`;
+          }
+          dispatch(clearRoutes(VALHALLA_URL!));
+          dispatch(
+            sendMessage({
+              type: 'warning',
+              icon: 'warning',
+              description: `${serverMapping[VALHALLA_URL!]}: ${error_msg}`,
+              title: `${response.data.status}`,
+            })
+          );
+        })
+        .finally(() => {
+          setTimeout(() => {
+            dispatch(showLoading(false));
+          }, 500);
+        });
+    };
 
 export const registerRouteResponse = (
   provider: string,
@@ -222,127 +222,127 @@ export const clearRoutes = (provider?: string) => ({
 
 const placeholderAddress =
   (index: number, lng: number, lat: number): ThunkResult =>
-  (dispatch) => {
-    // placeholder until geocoder is complete
-    // will add latLng to input field
-    const addresses: ActiveWaypoint[] = [
-      {
-        title: '',
-        displaylnglat: [lng, lat],
-        key: index,
-        addressindex: index,
-      },
-    ];
-    dispatch(receiveGeocodeResults({ addresses, index: index }));
-    dispatch(
-      updateTextInput({
-        inputValue: [lng.toFixed(6), lat.toFixed(6)].join(', '),
-        index: index,
-        addressindex: 0,
-      })
-    );
-  };
+    (dispatch) => {
+      // placeholder until geocoder is complete
+      // will add latLng to input field
+      const addresses: ActiveWaypoint[] = [
+        {
+          title: '',
+          displaylnglat: [lng, lat],
+          key: index,
+          addressindex: index,
+        },
+      ];
+      dispatch(receiveGeocodeResults({ addresses, index: index }));
+      dispatch(
+        updateTextInput({
+          inputValue: [lng.toFixed(6), lat.toFixed(6)].join(', '),
+          index: index,
+          addressindex: 0,
+        })
+      );
+    };
 
 export const fetchReverseGeocodePerma =
   (object: FetchReverseGeocodePermaObject): ThunkResult =>
-  (dispatch) => {
-    dispatch(requestGeocodeResults({ index: object.index, reverse: true }));
+    (dispatch) => {
+      dispatch(requestGeocodeResults({ index: object.index, reverse: true }));
 
-    const { index } = object;
-    const { permaLast } = object;
-    const { lng, lat } = object.latLng;
+      const { index } = object;
+      const { permaLast } = object;
+      const { lng, lat } = object.latLng;
 
-    if (index > 1) {
-      dispatch(doAddWaypoint(true));
-    }
+      if (index > 1) {
+        dispatch(doAddWaypoint(true));
+      }
 
-    reverse_geocode(lng, lat)
-      .then((response) => {
-        dispatch(
-          processGeocodeResponse(
-            response.data,
-            index,
-            true,
-            [lng, lat],
-            permaLast
-          )
-        );
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    // .finally(() => {
-    //   // always executed
-    // })
-  };
-
-export const fetchReverseGeocode =
-  (object: FetchReverseGeocodeObject): ThunkResult =>
-  (dispatch, getState) => {
-    //dispatch(requestGeocodeResults({ index: object.index, reverse: true }))
-    const { waypoints } = getState().directions;
-
-    let { index } = object;
-    const { fromDrag } = object;
-    const { lng, lat } = object.latLng;
-
-    if (index === -1) {
-      index = waypoints.length - 1;
-    } else if (index === 1 && !fromDrag) {
-      // insert waypoint from context menu
-      dispatch(doAddWaypoint(true));
-
-      index = waypoints.length - 2;
-    }
-
-    dispatch(placeholderAddress(index, lng, lat));
-
-    dispatch(requestGeocodeResults({ index, reverse: true }));
-
-    reverse_geocode(lng, lat)
-      .then((response) => {
-        dispatch(
-          processGeocodeResponse(response.data, index, true, [lng, lat])
-        );
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    // .finally(() => {
-    //   // always executed
-    // })
-  };
-
-export const fetchGeocode =
-  (object: FetchGeocodeObject): ThunkResult =>
-  (dispatch) => {
-    if (object.lngLat) {
-      const addresses: ActiveWaypoint[] = [
-        {
-          title: object.lngLat.toString(),
-          description: '',
-          selected: false,
-          addresslnglat: object.lngLat,
-          sourcelnglat: object.lngLat,
-          displaylnglat: object.lngLat,
-          key: object.index,
-          addressindex: 0,
-        },
-      ];
-      dispatch(receiveGeocodeResults({ addresses, index: object.index }));
-    } else {
-      dispatch(requestGeocodeResults({ index: object.index }));
-
-      forward_geocode(object.inputValue!)
+      reverse_geocode(lng, lat)
         .then((response) => {
-          dispatch(processGeocodeResponse(response.data, object.index));
+          dispatch(
+            processGeocodeResponse(
+              response.data,
+              index,
+              true,
+              [lng, lat],
+              permaLast
+            )
+          );
         })
         .catch((error) => {
           console.log(error);
+        });
+      // .finally(() => {
+      //   // always executed
+      // })
+    };
+
+export const fetchReverseGeocode =
+  (object: FetchReverseGeocodeObject): ThunkResult =>
+    (dispatch, getState) => {
+      //dispatch(requestGeocodeResults({ index: object.index, reverse: true }))
+      const { waypoints } = getState().directions;
+
+      let { index } = object;
+      const { fromDrag } = object;
+      const { lng, lat } = object.latLng;
+
+      if (index === -1) {
+        index = waypoints.length - 1;
+      } else if (index === 1 && !fromDrag) {
+        // insert waypoint from context menu
+        dispatch(doAddWaypoint(true));
+
+        index = waypoints.length - 2;
+      }
+
+      dispatch(placeholderAddress(index, lng, lat));
+
+      dispatch(requestGeocodeResults({ index, reverse: true }));
+
+      reverse_geocode(lng, lat)
+        .then((response) => {
+          dispatch(
+            processGeocodeResponse(response.data, index, true, [lng, lat])
+          );
         })
-        .finally(() => {});
-    }
-  };
+        .catch((error) => {
+          console.log(error);
+        });
+      // .finally(() => {
+      //   // always executed
+      // })
+    };
+
+export const fetchGeocode =
+  (object: FetchGeocodeObject): ThunkResult =>
+    (dispatch) => {
+      if (object.lngLat) {
+        const addresses: ActiveWaypoint[] = [
+          {
+            title: object.lngLat.toString(),
+            description: '',
+            selected: false,
+            addresslnglat: object.lngLat,
+            sourcelnglat: object.lngLat,
+            displaylnglat: object.lngLat,
+            key: object.index,
+            addressindex: 0,
+          },
+        ];
+        dispatch(receiveGeocodeResults({ addresses, index: object.index }));
+      } else {
+        dispatch(requestGeocodeResults({ index: object.index }));
+
+        forward_geocode(object.inputValue!)
+          .then((response) => {
+            dispatch(processGeocodeResponse(response.data, object.index));
+          })
+          .catch((error) => {
+            console.log(error);
+          })
+          .finally(() => { });
+      }
+    };
 
 const processGeocodeResponse =
   (
@@ -352,40 +352,40 @@ const processGeocodeResponse =
     lngLat?: [number, number],
     permaLast?: boolean
   ): ThunkResult =>
-  (dispatch) => {
-    const addresses = parseGeocodeResponse(data, lngLat!);
-    // if no address can be found
-    if (addresses.length === 0) {
-      dispatch(
-        sendMessage({
-          type: 'warning',
-          icon: 'warning',
-          description: 'Sorry, no addresses can be found.',
-          title: 'No addresses',
-        })
-      );
-    }
-    dispatch(
-      receiveGeocodeResults({ addresses: addresses as ActiveWaypoint[], index })
-    );
-
-    if (reverse) {
-      dispatch(
-        updateTextInput({
-          inputValue: addresses[0]?.title || '',
-          index: index,
-          addressindex: 0,
-        })
-      );
-      if (permaLast === undefined) {
-        dispatch(makeRequest());
-        dispatch(updatePermalink());
-      } else if (permaLast) {
-        dispatch(makeRequest());
-        dispatch(updatePermalink());
+    (dispatch) => {
+      const addresses = parseGeocodeResponse(data, lngLat!);
+      // if no address can be found
+      if (addresses.length === 0) {
+        dispatch(
+          sendMessage({
+            type: 'warning',
+            icon: 'warning',
+            description: 'Sorry, no addresses can be found.',
+            title: 'No addresses',
+          })
+        );
       }
-    }
-  };
+      dispatch(
+        receiveGeocodeResults({ addresses: addresses as ActiveWaypoint[], index })
+      );
+
+      if (reverse) {
+        dispatch(
+          updateTextInput({
+            inputValue: addresses[0]?.title || '',
+            index: index,
+            addressindex: 0,
+          })
+        );
+        if (permaLast === undefined) {
+          dispatch(makeRequest());
+          dispatch(updatePermalink());
+        } else if (permaLast) {
+          dispatch(makeRequest());
+          dispatch(updatePermalink());
+        }
+      }
+    };
 
 export const receiveGeocodeResults = (object: ReceiveGeocodeResultsObject) => ({
   type: RECEIVE_GEOCODE_RESULTS,
@@ -404,58 +404,58 @@ export const updateTextInput = (object: UpdateTextInputObject) => ({
 
 export const doRemoveWaypoint =
   (index?: number): ThunkResult =>
-  (dispatch, getState) => {
-    if (index === undefined) {
-      dispatch(clearWaypoints());
-      Array(2)
-        .fill(null)
-        .map(() => dispatch(doAddWaypoint(false)));
-    } else {
-      let waypoints = getState().directions.waypoints;
-      if (waypoints.length > 2) {
-        dispatch(clearWaypoints(index));
-        dispatch(makeRequest());
+    (dispatch, getState) => {
+      if (index === undefined) {
+        dispatch(clearWaypoints());
+        Array(2)
+          .fill(null)
+          .map(() => dispatch(doAddWaypoint(false)));
       } else {
-        dispatch(emptyWaypoint(index));
+        let waypoints = getState().directions.waypoints;
+        if (waypoints.length > 2) {
+          dispatch(clearWaypoints(index));
+          dispatch(makeRequest());
+        } else {
+          dispatch(emptyWaypoint(index));
+        }
+        waypoints = getState().directions.waypoints;
+        if (getActiveWaypoints(waypoints).length < 2) {
+          dispatch(clearRoutes(VALHALLA_URL!));
+        }
       }
-      waypoints = getState().directions.waypoints;
-      if (getActiveWaypoints(waypoints).length < 2) {
-        dispatch(clearRoutes(VALHALLA_OSM_URL!));
-      }
-    }
-    dispatch(updatePermalink());
-  };
+      dispatch(updatePermalink());
+    };
 
 export const isWaypoint =
   (index: number): ThunkResult =>
-  (dispatch, getState) => {
-    const waypoints = getState().directions.waypoints;
-    if (
-      waypoints[index]?.geocodeResults.length &&
-      waypoints[index]?.geocodeResults.length > 0
-    ) {
-      dispatch(clearRoutes(VALHALLA_OSM_URL!));
-    }
-  };
+    (dispatch, getState) => {
+      const waypoints = getState().directions.waypoints;
+      if (
+        waypoints[index]?.geocodeResults.length &&
+        waypoints[index]?.geocodeResults.length > 0
+      ) {
+        dispatch(clearRoutes(VALHALLA_URL!));
+      }
+    };
 
 export const highlightManeuver =
   (fromTo: HighlightSegment): ThunkResult =>
-  (dispatch, getState) => {
-    const highlightSegment = getState().directions.highlightSegment;
-    // this is dehighlighting
-    if (
-      highlightSegment.startIndex === fromTo.startIndex &&
-      highlightSegment.endIndex === fromTo.endIndex
-    ) {
-      fromTo.startIndex = -1;
-      fromTo.endIndex = -1;
-    }
+    (dispatch, getState) => {
+      const highlightSegment = getState().directions.highlightSegment;
+      // this is dehighlighting
+      if (
+        highlightSegment.startIndex === fromTo.startIndex &&
+        highlightSegment.endIndex === fromTo.endIndex
+      ) {
+        fromTo.startIndex = -1;
+        fromTo.endIndex = -1;
+      }
 
-    dispatch({
-      type: HIGHLIGHT_MNV,
-      payload: fromTo,
-    });
-  };
+      dispatch({
+        type: HIGHLIGHT_MNV,
+        payload: fromTo,
+      });
+    };
 
 export const zoomToManeuver = (zoomObj: ZoomObject) => ({
   type: ZOOM_TO_MNV,
@@ -479,27 +479,27 @@ export const updateInclineDeclineTotal = (object: Record<string, unknown>) => ({
 
 export const doAddWaypoint =
   (doInsert?: boolean): ThunkResult =>
-  (dispatch, getState) => {
-    const waypoints = getState().directions.waypoints;
-    let maxIndex = Math.max(
-      ...waypoints.map((wp: Waypoint) => {
-        return parseInt(wp.id, 10);
-      })
-    );
-    maxIndex = isFinite(maxIndex) === false ? 0 : maxIndex + 1;
+    (dispatch, getState) => {
+      const waypoints = getState().directions.waypoints;
+      let maxIndex = Math.max(
+        ...waypoints.map((wp: Waypoint) => {
+          return parseInt(wp.id, 10);
+        })
+      );
+      maxIndex = isFinite(maxIndex) === false ? 0 : maxIndex + 1;
 
-    const emptyWp: Waypoint = {
-      id: maxIndex.toString(),
-      geocodeResults: [],
-      isFetching: false,
-      userInput: '',
+      const emptyWp: Waypoint = {
+        id: maxIndex.toString(),
+        geocodeResults: [],
+        isFetching: false,
+        userInput: '',
+      };
+      if (doInsert) {
+        dispatch(insertWaypoint(emptyWp));
+      } else {
+        dispatch(addWaypoint(emptyWp));
+      }
     };
-    if (doInsert) {
-      dispatch(insertWaypoint(emptyWp));
-    } else {
-      dispatch(addWaypoint(emptyWp));
-    }
-  };
 
 const insertWaypoint = (waypoint: Waypoint) => ({
   type: INSERT_WAYPOINT,

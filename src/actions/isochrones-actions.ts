@@ -12,8 +12,8 @@ import {
   reverse_geocode,
   forward_geocode,
   parseGeocodeResponse,
-} from '@/utils/nominatim';
-import { VALHALLA_OSM_URL, buildIsochronesRequest } from '@/utils/valhalla';
+} from '../utils/nominatim';
+import { VALHALLA_URL, buildIsochronesRequest } from '../utils/valhalla';
 
 import {
   sendMessage,
@@ -21,16 +21,16 @@ import {
   updatePermalink,
   filterProfileSettings,
 } from './common-actions';
-import { calcArea } from '@/utils/geom';
+import { calcArea } from '../utils/geom';
 import type {
   ActiveWaypoint,
   NominationResponse,
   ThunkResult,
   ValhallaIsochroneResponse,
-} from '@/common/types';
+} from '../common/types';
 
 const serverMapping = {
-  [VALHALLA_OSM_URL!]: 'OSM',
+  [VALHALLA_URL!]: 'OSM',
 };
 
 export const makeIsochronesRequest =
@@ -60,7 +60,6 @@ export const makeIsochronesRequest =
     if (center !== undefined) {
       const valhallaRequest = buildIsochronesRequest({
         profile,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         center: center as any, // Cast to avoid type mismatch between ActiveWaypoint and Center
         // @ts-expect-error todo: this is not correct. initial settings and filtered settings are not the same but we are changing in later.
         // we should find a better way to do this.
@@ -76,43 +75,43 @@ export const makeIsochronesRequest =
 
 const fetchValhallaIsochrones =
   (valhallaRequest: ReturnType<typeof buildIsochronesRequest>): ThunkResult =>
-  (dispatch) => {
-    dispatch(showLoading(true));
+    (dispatch) => {
+      dispatch(showLoading(true));
 
-    for (const URL of [VALHALLA_OSM_URL]) {
-      axios
-        .get<ValhallaIsochroneResponse>(URL + '/isochrone', {
-          params: { json: JSON.stringify(valhallaRequest.json) },
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-        .then(({ data }) => {
-          data.features.forEach((feature) => {
-            if (feature.properties) {
-              feature.properties.area = calcArea(feature);
-            }
+      for (const URL of [VALHALLA_URL]) {
+        axios
+          .get<ValhallaIsochroneResponse>(URL + '/isochrone', {
+            params: { json: JSON.stringify(valhallaRequest.json) },
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          })
+          .then(({ data }) => {
+            data.features.forEach((feature) => {
+              if (feature.properties) {
+                feature.properties.area = calcArea(feature);
+              }
+            });
+            dispatch(registerIsoResponse(URL!, data));
+          })
+          .catch(({ response }) => {
+            dispatch(registerIsoResponse(URL!, []));
+            dispatch(
+              sendMessage({
+                type: 'warning',
+                icon: 'warning',
+                description: `${serverMapping[URL!]}: ${response.data.error}`,
+                title: `${response.data.status}`,
+              })
+            );
+          })
+          .finally(() => {
+            setTimeout(() => {
+              dispatch(showLoading(false));
+            }, 500);
           });
-          dispatch(registerIsoResponse(URL!, data));
-        })
-        .catch(({ response }) => {
-          dispatch(registerIsoResponse(URL!, []));
-          dispatch(
-            sendMessage({
-              type: 'warning',
-              icon: 'warning',
-              description: `${serverMapping[URL!]}: ${response.data.error}`,
-              title: `${response.data.status}`,
-            })
-          );
-        })
-        .finally(() => {
-          setTimeout(() => {
-            dispatch(showLoading(false));
-          }, 500);
-        });
-    }
-  };
+      }
+    };
 
 export const clearIsos = (provider?: string) => ({
   type: CLEAR_ISOS,
@@ -151,70 +150,16 @@ export const updateIsoSettings = (obj: {
 
 const placeholderAddress =
   (index: number, lng: number, lat: number): ThunkResult =>
-  (dispatch) => {
-    // placeholder until gecoder is complete
-    // will add latLng to input field
-    const addresses = [
-      {
-        selected: false,
-        title: '',
-        displaylnglat: [lng, lat],
-        key: index,
-        addressindex: index,
-      },
-    ];
-
-    dispatch({
-      type: RECEIVE_GEOCODE_RESULTS_ISO,
-      payload: addresses,
-    });
-    dispatch({
-      type: UPDATE_TEXTINPUT_ISO,
-      payload: {
-        userInput: [lng.toFixed(6), lat.toFixed(6)].join(', '),
-        index: 0,
-        addressindex: 0,
-      },
-    });
-  };
-
-export const fetchReverseGeocodeIso =
-  (lng: number, lat: number): ThunkResult =>
-  (dispatch) => {
-    dispatch(placeholderAddress(0, lng, lat));
-
-    dispatch({
-      type: REQUEST_GEOCODE_RESULTS_ISO,
-    });
-    reverse_geocode(lng, lat)
-      .then((response) => {
-        dispatch(processGeocodeResponse(response.data, true, [lng, lat]));
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    // .finally(() => {
-    //   // always executed
-    // })
-  };
-
-export const fetchGeocode =
-  (userInput: string, lngLat?: [number, number]): ThunkResult =>
-  (dispatch) => {
-    dispatch({
-      type: REQUEST_GEOCODE_RESULTS_ISO,
-    });
-
-    if (lngLat) {
+    (dispatch) => {
+      // placeholder until gecoder is complete
+      // will add latLng to input field
       const addresses = [
         {
-          title: lngLat.toString(),
-          description: '',
           selected: false,
-          addresslnglat: lngLat,
-          sourcelnglat: lngLat,
-          displaylnglat: lngLat,
-          addressindex: 0,
+          title: '',
+          displaylnglat: [lng, lat],
+          key: index,
+          addressindex: index,
         },
       ];
 
@@ -222,16 +167,70 @@ export const fetchGeocode =
         type: RECEIVE_GEOCODE_RESULTS_ISO,
         payload: addresses,
       });
-    } else {
-      forward_geocode(userInput)
+      dispatch({
+        type: UPDATE_TEXTINPUT_ISO,
+        payload: {
+          userInput: [lng.toFixed(6), lat.toFixed(6)].join(', '),
+          index: 0,
+          addressindex: 0,
+        },
+      });
+    };
+
+export const fetchReverseGeocodeIso =
+  (lng: number, lat: number): ThunkResult =>
+    (dispatch) => {
+      dispatch(placeholderAddress(0, lng, lat));
+
+      dispatch({
+        type: REQUEST_GEOCODE_RESULTS_ISO,
+      });
+      reverse_geocode(lng, lat)
         .then((response) => {
-          dispatch(processGeocodeResponse(response.data));
+          dispatch(processGeocodeResponse(response.data, true, [lng, lat]));
         })
         .catch((error) => {
           console.log(error);
         });
-    }
-  };
+      // .finally(() => {
+      //   // always executed
+      // })
+    };
+
+export const fetchGeocode =
+  (userInput: string, lngLat?: [number, number]): ThunkResult =>
+    (dispatch) => {
+      dispatch({
+        type: REQUEST_GEOCODE_RESULTS_ISO,
+      });
+
+      if (lngLat) {
+        const addresses = [
+          {
+            title: lngLat.toString(),
+            description: '',
+            selected: false,
+            addresslnglat: lngLat,
+            sourcelnglat: lngLat,
+            displaylnglat: lngLat,
+            addressindex: 0,
+          },
+        ];
+
+        dispatch({
+          type: RECEIVE_GEOCODE_RESULTS_ISO,
+          payload: addresses,
+        });
+      } else {
+        forward_geocode(userInput)
+          .then((response) => {
+            dispatch(processGeocodeResponse(response.data));
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+    };
 
 const processGeocodeResponse =
   (
@@ -239,37 +238,37 @@ const processGeocodeResponse =
     reverse?: boolean,
     lngLat?: [number, number]
   ): ThunkResult =>
-  (dispatch) => {
-    const addresses = parseGeocodeResponse(data, lngLat!);
-    // if no address can be found
-    if (addresses.length === 0) {
-      dispatch(
-        sendMessage({
-          type: 'warning',
-          icon: 'warning',
-          description: 'Sorry, no addresses can be found.',
-          title: 'No addresses',
-        })
-      );
-    }
-    dispatch({
-      type: RECEIVE_GEOCODE_RESULTS_ISO,
-      payload: addresses,
-    });
-
-    if (reverse) {
+    (dispatch) => {
+      const addresses = parseGeocodeResponse(data, lngLat!);
+      // if no address can be found
+      if (addresses.length === 0) {
+        dispatch(
+          sendMessage({
+            type: 'warning',
+            icon: 'warning',
+            description: 'Sorry, no addresses can be found.',
+            title: 'No addresses',
+          })
+        );
+      }
       dispatch({
-        type: UPDATE_TEXTINPUT_ISO,
-        payload: {
-          userInput: addresses[0]?.title || '',
-          index: 0,
-          addressindex: 0,
-        },
+        type: RECEIVE_GEOCODE_RESULTS_ISO,
+        payload: addresses,
       });
-      dispatch(updatePermalink());
-      dispatch(makeIsochronesRequest());
-    }
-  };
+
+      if (reverse) {
+        dispatch({
+          type: UPDATE_TEXTINPUT_ISO,
+          payload: {
+            userInput: addresses[0]?.title || '',
+            index: 0,
+            addressindex: 0,
+          },
+        });
+        dispatch(updatePermalink());
+        dispatch(makeIsochronesRequest());
+      }
+    };
 
 export const showProvider = (provider: string, show: boolean) => ({
   type: TOGGLE_PROVIDER_ISO,

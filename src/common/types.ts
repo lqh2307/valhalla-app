@@ -1,6 +1,6 @@
-import type { RootState } from '@/store';
+import type { RootState } from '../store';
 import type { AnyAction } from 'redux';
-import type { ThunkAction } from 'redux-thunk';
+import type { ThunkAction } from '@reduxjs/toolkit';
 
 export interface ActiveWaypoint {
   title: string;

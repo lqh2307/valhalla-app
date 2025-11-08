@@ -1,31 +1,30 @@
 import { useEffect, useCallback, useRef } from 'react';
 import { connect } from 'react-redux';
-import type { ThunkDispatch } from 'redux-thunk';
+import type { ThunkDispatch } from '@reduxjs/toolkit';
 import { Divider, type ButtonProps } from 'semantic-ui-react';
 
 import Waypoints from './waypoints';
 
-import { ProfilePicker } from '@/components/profile-picker';
-import { SettingsButton } from '@/components/settings-button';
-import { SettingsFooter } from '@/components/settings-footer';
+import { ProfilePicker } from '../../components/profile-picker';
+import { SettingsButton } from '../../components/settings-button';
 import { Settings } from './settings';
-import { DateTimePicker } from '@/components/date-time-picker';
+import { DateTimePicker } from '../../components/date-time-picker';
 
 import {
   doAddWaypoint,
   doRemoveWaypoint,
   makeRequest,
   clearRoutes,
-} from '@/actions/directions-actions';
+} from '../../actions/directions-actions';
 import {
   updateProfile,
   doShowSettings,
   updatePermalink,
   resetSettings,
   doUpdateDateTime,
-} from '@/actions/common-actions';
-import type { RootState } from '@/store';
-import type { Profile } from '@/reducers/common';
+} from '../../actions/common-actions';
+import type { RootState } from '../../store';
+import type { Profile } from '../../reducers/common';
 import type { AnyAction } from 'redux';
 
 interface DirectionsControlProps {
@@ -141,8 +140,6 @@ const DirectionsControl = ({
           onChange={handleDateTime}
         />
       </div>
-      <Divider fitted />
-      <SettingsFooter />
     </div>
   );
 };

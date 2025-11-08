@@ -10,19 +10,11 @@ yarn.lock
 /.pnp
 .pnp.js
 
-# testing
-/coverage
-*.patch
-
 # production
 /build
 
 # misc
 .DS_Store
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
 
 npm-debug.log*
 yarn-debug.log*
@@ -30,8 +22,3 @@ yarn-error.log*
 
 # Playwright
 node_modules/
-/test-results/
-/playwright-report/
-/blob-report/
-/playwright/.cache/
-tsconfig.tsbuildinfo

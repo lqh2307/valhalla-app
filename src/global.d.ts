@@ -1,5 +1,3 @@
-/// <reference types="vite/client" />
-
 declare module '*.svg' {
   import type * as React from 'react';
 
@@ -9,4 +7,14 @@ declare module '*.svg' {
 
   export { ReactComponent };
   export default ReactComponent;
+}
+
+interface Window {
+  NODE_ENV?: 'development' | 'production';
+  SKIP_PREFLIGHT_CHECK?: boolean;
+  VALHALLA_URL?: string;
+  NOMINATIM_URL?: string;
+  TILE_SERVER_URL?: string;
+  CENTER_COORDS?: string;
+  MAX_BOUNDS?: string;
 }

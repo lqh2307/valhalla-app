@@ -28,25 +28,25 @@ i.help.grey.icon {
 }
 
 .ui.checkbox label,
-.ui.checkbox + label,
+.ui.checkbox+label,
 .custom-label {
   font-size: 0.85em;
   font-weight: bold;
   color: rgba(0, 0, 0, 0.87);
 }
 
-.ui.toggle.checkbox input:focus:checked ~ .box:before,
-.ui.toggle.checkbox input:focus:checked ~ label:before {
+.ui.toggle.checkbox input:focus:checked~.box:before,
+.ui.toggle.checkbox input:focus:checked~label:before {
   background-color: #9943f5 !important;
 }
 
-.ui.toggle.checkbox input:checked ~ .box:before,
-.ui.toggle.checkbox input:checked ~ label:before {
+.ui.toggle.checkbox input:checked~.box:before,
+.ui.toggle.checkbox input:checked~label:before {
   background-color: #9943f5 !important;
 }
 
-.ui.toggle.checkbox input:focus:checked ~ .box:before,
-.ui.toggle.checkbox input:focus:checked ~ label:before {
+.ui.toggle.checkbox input:focus:checked~.box:before,
+.ui.toggle.checkbox input:focus:checked~label:before {
   background-color: #9943f5 !important;
 }
 
@@ -60,10 +60,10 @@ i.help.grey.icon {
   font-weight: bold;
 }
 
-.ui.menu .item{
+.ui.menu .item {
   width: 50%;
 }
 
-.ui.menu:not(.vertical) .item{
+.ui.menu:not(.vertical) .item {
   justify-content: center;
 }

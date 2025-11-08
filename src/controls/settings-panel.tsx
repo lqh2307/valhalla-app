@@ -30,16 +30,16 @@ import {
   doShowSettings,
   filterProfileSettings,
   resetSettings,
-} from '@/actions/common-actions';
+} from '../actions/common-actions';
 
 import CustomSlider from '../components/custom-slider';
-import { makeRequest } from '@/actions/directions-actions';
-import { makeIsochronesRequest } from '@/actions/isochrones-actions';
-import { Checkbox } from '@/components/checkbox';
-import type { RootState } from '@/store';
-import type { Profile } from '@/reducers/common';
-import type { PossibleSettings } from '@/common/types';
-import type { ThunkDispatch } from 'redux-thunk';
+import { makeRequest } from '../actions/directions-actions';
+import { makeIsochronesRequest } from '../actions/isochrones-actions';
+import { Checkbox } from '../components/checkbox';
+import type { RootState } from '../store';
+import type { Profile } from '../reducers/common';
+import type { PossibleSettings } from '../common/types';
+import type { ThunkDispatch } from '@reduxjs/toolkit';
 import type { AnyAction } from 'redux';
 
 // Define the profile keys that have settings (excluding 'auto')
@@ -78,7 +78,6 @@ const SettingsPanel = ({
     activeTab: number;
   }>({ profile, settings, showSettings, activeTab });
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleUpdateSettings = useCallback(
     debounce(300, ({ name, value }) => {
       dispatch(

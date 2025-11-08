@@ -7,12 +7,12 @@ export const decode = (str: string, precision: number = 6) => {
   let index = 0;
   let lat = 0;
   let lng = 0;
-  const coordinates = [];
+  const coordinates: [number, number][] = [];
   let shift = 0;
   let result = 0;
-  let byte = null;
-  let latitude_change;
-  let longitude_change;
+  let byte: number | null = null;
+  let latitude_change: number;
+  let longitude_change: number;
 
   const factor = Math.pow(10, precision);
 

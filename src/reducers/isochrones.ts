@@ -1,5 +1,3 @@
-// todo: we should get ride of @typescript-eslint/no-unsafe-assignment when we updating redux to redux-toolkit
-
 import {
   RECEIVE_GEOCODE_RESULTS_ISO,
   REQUEST_GEOCODE_RESULTS_ISO,
@@ -8,11 +6,11 @@ import {
   UPDATE_TEXTINPUT_ISO,
   TOGGLE_PROVIDER_ISO,
   CLEAR_ISOS,
-} from '@/actions/types';
+} from '../actions/types';
 
-import { VALHALLA_OSM_URL } from '../utils/valhalla';
+import { VALHALLA_URL } from '../utils/valhalla';
 import type { AnyAction } from 'redux';
-import type { ActiveWaypoint, ValhallaIsochroneResponse } from '@/common/types';
+import type { ActiveWaypoint, ValhallaIsochroneResponse } from '../common/types';
 
 interface IsochroneResult {
   data: ValhallaIsochroneResponse;
@@ -43,10 +41,9 @@ const initialState: IsochroneState = {
   denoise: 0.1,
   generalize: 0,
   results: {
-    [VALHALLA_OSM_URL!]: {
+    [VALHALLA_URL!]: {
       data: {},
       show: true,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any,
   },
 };
@@ -106,7 +103,6 @@ export const isochrones = (
         userInput: payload.userInput,
         selectedAddress: state.geocodeResults[
           action.payload.addressindex
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
         ] as any,
         geocodeResults: state.geocodeResults.map((result, i) =>
           i === action.payload.addressindex

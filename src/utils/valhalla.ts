@@ -1,4 +1,4 @@
-import type { Profile } from '@/reducers/common';
+import type { Profile } from '../reducers/common';
 import { decode } from './polyline';
 import type {
   ActiveWaypoint,
@@ -6,9 +6,9 @@ import type {
   IsochronesRequestParams,
   Settings,
   ValhallaRouteResponse,
-} from '@/common/types';
+} from '../common/types';
 
-export const VALHALLA_OSM_URL = process.env.REACT_APP_VALHALLA_URL;
+export const VALHALLA_URL = window.VALHALLA_URL;
 
 export const buildLocateRequest = (
   latLng: { lat: number; lng: number },
@@ -25,7 +25,7 @@ export const buildLocateRequest = (
 };
 
 export const buildHeightRequest = (latLngs: [number, number][]) => {
-  const shape = [];
+  const shape: { lat: number; lon: number }[] = [];
   for (const latLng of latLngs) {
     shape.push({ lat: latLng[0], lon: latLng[1] });
   }
@@ -68,7 +68,6 @@ export const buildDirectionsRequest = ({
   };
 
   if (dateTime.type > -1) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (req.json as any).date_time = dateTime;
   }
   return req;
@@ -124,7 +123,7 @@ export const makeContours = ({
   maxRange: number;
   interval: number;
 }) => {
-  let contours = [];
+  let contours: { time: number }[] = [];
   while (maxRange > 0) {
     contours.push({ time: maxRange });
     maxRange -= interval;
@@ -134,7 +133,7 @@ export const makeContours = ({
 };
 
 export const makeLocations = (waypoints: ActiveWaypoint[]) => {
-  const locations = [];
+  const locations: { lon: number; lat: number; type: string }[] = [];
   for (const [idx, waypoint] of waypoints.entries()) {
     const type = [0, waypoints.length - 1].includes(idx) ? 'break' : 'via';
     locations.push({

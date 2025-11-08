@@ -1,8 +1,8 @@
-import type { NominationResponse } from '@/common/types';
+import type { NominationResponse } from '../common/types';
 import axios from 'axios';
 
-export const NOMINATIM_URL = `${process.env.REACT_APP_NOMINATIM_URL}/search`;
-export const NOMINATIME_URL_REVERSE = `${process.env.REACT_APP_NOMINATIM_URL}/reverse`;
+export const NOMINATIM_URL = `${window.NOMINATIM_URL}/search`;
+export const NOMINATIME_URL_REVERSE = `${window.NOMINATIM_URL}/reverse`;
 
 export const forward_geocode = (userInput: string) =>
   axios.get<NominationResponse>(NOMINATIM_URL, {
@@ -30,7 +30,7 @@ export const parseGeocodeResponse = (
     results = [results];
   }
 
-  const processedResults = [];
+  const processedResults: any = [];
   for (const [index, result] of results.entries()) {
     if (
       'error' in result &&

@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Icon } from 'semantic-ui-react';
-import type { RootState } from '@/store';
-import type { IsochroneState } from '@/reducers/isochrones';
+import type { RootState } from '../../store';
+import type { IsochroneState } from '../../reducers/isochrones';
 
 interface ContoursInformationProps {
   results: IsochroneState['results'];

@@ -1,19 +1,17 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { connect } from 'react-redux';
 import { Segment, Button, Icon } from 'semantic-ui-react';
-
-import { makeRequest } from '@/actions/directions-actions';
-import { downloadFile } from '@/actions/common-actions';
+import { makeRequest } from '../../actions/directions-actions';
+import { downloadFile } from '../../actions/common-actions';
 import Summary from './summary';
 import Maneuvers from './maneuvers';
-import { VALHALLA_OSM_URL } from '@/utils/valhalla';
-// @ts-expect-error todo: json-format is not typed
+import { VALHALLA_URL } from '../../utils/valhalla';
 import jsonFormat from 'json-format';
-import { jsonConfig } from '@/controls/settings-options';
-import type { RootState } from '@/store';
-import type { ThunkDispatch } from 'redux-thunk';
+import { jsonConfig } from '../../controls/settings-options';
+import type { RootState } from '../../store';
+import type { ThunkDispatch } from '@reduxjs/toolkit';
 import type { AnyAction } from 'redux';
-import type { DirectionsState } from '@/reducers/directions';
+import type { DirectionsState } from '../../reducers/directions';
 
 type ShowResultsState = Record<string | number, boolean>;
 
@@ -33,7 +31,7 @@ const OutputControl = ({
   const prevPropsRef = useRef<{ activeTab: number }>({ activeTab });
 
   const initializeShowResults = useCallback(() => {
-    const routeResult = results[VALHALLA_OSM_URL!];
+    const routeResult = results[VALHALLA_URL!];
     const data = routeResult?.data;
 
     let alternates: number[] = [];
@@ -88,7 +86,7 @@ const OutputControl = ({
 
   const exportToJson = useCallback(
     (e: React.MouseEvent) => {
-      const routeResult = results[VALHALLA_OSM_URL!];
+      const routeResult = results[VALHALLA_URL!];
       const data = routeResult?.data;
       if (!data) return;
       const formattedData = jsonFormat(data, jsonConfig);
@@ -104,7 +102,7 @@ const OutputControl = ({
 
   const exportToGeoJson = useCallback(
     (e: React.MouseEvent) => {
-      const routeResult = results[VALHALLA_OSM_URL!];
+      const routeResult = results[VALHALLA_URL!];
       const data = routeResult?.data;
       const coordinates = data?.decodedGeometry;
       if (!coordinates) return;
@@ -131,7 +129,7 @@ const OutputControl = ({
     [results, dateNow]
   );
 
-  const routeResult = results[VALHALLA_OSM_URL!];
+  const routeResult = results[VALHALLA_URL!];
   if (!routeResult?.data) {
     return null;
   }

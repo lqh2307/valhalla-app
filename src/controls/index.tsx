@@ -21,17 +21,17 @@ import {
   zoomTo,
   resetSettings,
   toggleDirections,
-} from '@/actions/common-actions';
-import { fetchReverseGeocodePerma } from '@/actions/directions-actions';
+} from '../actions/common-actions';
+import { fetchReverseGeocodePerma } from '../actions/directions-actions';
 import {
   fetchReverseGeocodeIso,
   updateIsoSettings,
-} from '@/actions/isochrones-actions';
-import { VALHALLA_OSM_URL } from '@/utils/valhalla';
-import type { RootState } from '@/store';
+} from '../actions/isochrones-actions';
+import { VALHALLA_URL } from '../utils/valhalla';
+import type { RootState } from '../store';
 import type { AnyAction } from 'redux';
-import type { ThunkDispatch } from 'redux-thunk';
-import type { Message, Profile } from '@/reducers/common';
+import type { ThunkDispatch } from '@reduxjs/toolkit';
+import type { Message, Profile } from '../reducers/common';
 
 const pairwise = (
   arr: number[],
@@ -57,7 +57,7 @@ const MainControl = (props: MainControlProps) => {
   const prevMessageRef = React.useRef<number | null>(null);
 
   const getLastUpdate = async () => {
-    const response = await fetch(`${VALHALLA_OSM_URL}/status`);
+    const response = await fetch(`${VALHALLA_URL}/status`);
     const data = await response.json();
     setLastUpdate(new Date(data.tileset_last_modified * 1000));
   };
@@ -157,7 +157,6 @@ const MainControl = (props: MainControlProps) => {
       dispatch(zoomTo(processedCoords));
       dispatch(resetSettings());
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -182,7 +181,6 @@ const MainControl = (props: MainControlProps) => {
     }
 
     prevMessageRef.current = message.receivedAt;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.message]);
 
   const handleTabChange = (

@@ -15,8 +15,8 @@ import {
   profile_settings,
   settings_general,
 } from '../controls/settings-options';
-import type { Profile } from '@/reducers/common';
-import type { PossibleSettings, ThunkResult } from '@/common/types';
+import type { Profile } from '../reducers/common';
+import type { PossibleSettings, ThunkResult } from '../common/types';
 
 export const showLoading = (loading: boolean) => ({
   type: LOADING,
@@ -90,11 +90,11 @@ export const updatePermalink = (): ThunkResult => (_, getState) => {
 
   let path = '/directions?';
   if (activeTab === 0) {
-    const wps = [];
+    const wps: [number, number][] = [];
     for (const wp of waypoints) {
       for (const result of wp.geocodeResults) {
         if (result.selected) {
-          wps.push(result.sourcelnglat);
+          wps.push(result.sourcelnglat as [number, number]);
         }
       }
     }

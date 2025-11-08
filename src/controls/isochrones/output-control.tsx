@@ -3,11 +3,11 @@ import { connect } from 'react-redux';
 import { Segment, Divider } from 'semantic-ui-react';
 
 import Summary from './summary';
-import { makeIsochronesRequest } from '@/actions/isochrones-actions';
+import { makeIsochronesRequest } from '../../actions/isochrones-actions';
 import ContoursInformation from './contours-information';
-import { VALHALLA_OSM_URL } from '@/utils/valhalla';
-import type { RootState } from '@/store';
-import type { ThunkDispatch } from 'redux-thunk';
+import { VALHALLA_URL } from '../../utils/valhalla';
+import type { RootState } from '../../store';
+import type { ThunkDispatch } from '@reduxjs/toolkit';
 import type { AnyAction } from 'redux';
 
 interface OutputControlProps {
@@ -54,10 +54,10 @@ const OutputControl = ({
     >
       <div className="flex-column">
         <div className="flex justify-between pointer">
-          <Summary provider={VALHALLA_OSM_URL!} />
+          <Summary provider={VALHALLA_URL!} />
         </div>
         <Divider />
-        <ContoursInformation provider={VALHALLA_OSM_URL!} />
+        <ContoursInformation provider={VALHALLA_URL!} />
       </div>
     </Segment>
   );

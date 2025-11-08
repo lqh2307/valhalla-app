@@ -7,14 +7,14 @@ import {
   doAddWaypoint,
   setWaypoints,
   makeRequest,
-} from '@/actions/directions-actions';
-import type { RootState } from '@/store';
+} from '../../../actions/directions-actions';
+import type { RootState } from '../../../store';
 import type { AnyAction } from 'redux';
 import type {
   DirectionsState,
   Waypoint as WaypointType,
-} from '@/reducers/directions';
-import type { ThunkDispatch } from 'redux-thunk';
+} from '../../../reducers/directions';
+import type { ThunkDispatch } from '@reduxjs/toolkit';
 
 const reorder = (
   list: WaypointType[],

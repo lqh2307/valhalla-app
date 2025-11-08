@@ -1,33 +1,33 @@
 import { useState, useCallback, useMemo } from 'react';
 import { connect } from 'react-redux';
 
-import { Search, Form, Popup, Icon, Label, Accordion } from 'semantic-ui-react';
+import { Search, Form, Popup, Icon, Label, Accordion, SearchProps, SearchResultProps } from 'semantic-ui-react';
 import { Slider } from '@mui/material';
 
 import { Settings } from '../settings';
 
-import { isValidCoordinates } from '@/utils/geom';
+import { isValidCoordinates } from '../../../utils/geom';
 import {
   updateTextInput,
   updateIsoSettings,
   fetchGeocode,
   makeIsochronesRequest,
   clearIsos,
-} from '@/actions/isochrones-actions';
+} from '../../../actions/isochrones-actions';
 
 import {
   denoise as denoiseParam,
   generalize as generalizeParam,
   settingsInit,
-} from '@/controls/settings-options';
+} from '../../../controls/settings-options';
 
-import { updatePermalink, zoomTo } from '@/actions/common-actions';
+import { updatePermalink, zoomTo } from '../../../actions/common-actions';
 
 import { debounce } from 'throttle-debounce';
-import type { RootState } from '@/store';
+import type { RootState } from '../../../store';
 import type { AnyAction } from 'redux';
-import type { ThunkDispatch } from 'redux-thunk';
-import type { IsochroneState } from '@/reducers/isochrones';
+import type { ThunkDispatch } from '@reduxjs/toolkit';
+import type { IsochroneState } from '../../../reducers/isochrones';
 
 interface WaypointsProps {
   isochrones: IsochroneState;
@@ -111,8 +111,8 @@ const Waypoints = ({ isochrones, dispatch, use_geocoding }: WaypointsProps) => {
   );
 
   const handleSearchChange = useCallback(
-    (event, { value }) => {
-      dispatch(updateTextInput({ userInput: value }));
+    (event: any, data: SearchProps) => {
+      dispatch(updateTextInput({ userInput: data.value as string }));
     },
     [dispatch]
   );
@@ -209,16 +209,16 @@ const Waypoints = ({ isochrones, dispatch, use_geocoding }: WaypointsProps) => {
   );
 
   const resultRenderer = useCallback(
-    ({ title, description }) => (
+    (data: SearchResultProps) => (
       <div data-testid="search-result" className="flex-column">
         <div>
-          <span className="title">{title}</span>
+          <span className="title">{data.title}</span>
         </div>
-        {description && description.length > 0 && (
+        {data.description && data.description.length > 0 && (
           <div>
             <Icon disabled name="linkify" />
             <span className="description b">
-              <a target="_blank" rel="noopener noreferrer" href={description}>
+              <a target="_blank" rel="noopener noreferrer" href={data.description}>
                 OSM Link
               </a>
             </span>

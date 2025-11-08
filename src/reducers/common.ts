@@ -1,5 +1,3 @@
-// todo: we should get ride of @typescript-eslint/no-unsafe-assignment when we updating redux to redux-toolkit
-
 import {
   UPDATE_SETTINGS,
   UPDATE_PROFILE,
@@ -11,12 +9,12 @@ import {
   RESET_SETTINGS,
   TOGGLE_DIRECTIONS,
   UPDATE_DATETIME,
-} from '@/actions/types';
-import type { PossibleSettings } from '@/common/types';
+} from '../actions/types';
+import type { PossibleSettings } from '../common/types';
 import {
   settingsInit,
   settingsInitTruckOverride,
-} from '@/controls/settings-options';
+} from '../controls/settings-options';
 import type { AnyAction } from 'redux';
 
 export type Profile =

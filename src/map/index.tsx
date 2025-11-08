@@ -26,28 +26,28 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import {
   fetchReverseGeocode,
   updateInclineDeclineTotal,
-} from '@/actions/directions-actions';
-import { fetchReverseGeocodeIso } from '@/actions/isochrones-actions';
-import { updateSettings } from '@/actions/common-actions';
+} from '../actions/directions-actions';
+import { fetchReverseGeocodeIso } from '../actions/isochrones-actions';
+import { updateSettings } from '../actions/common-actions';
 import {
-  VALHALLA_OSM_URL,
+  VALHALLA_URL,
   buildHeightRequest,
   buildLocateRequest,
-} from '@/utils/valhalla';
-import { buildHeightgraphData } from '@/utils/heightgraph';
-import { formatDuration } from '@/utils/date-time';
-import HeightGraph from '@/components/heightgraph';
+} from '../utils/valhalla';
+import { buildHeightgraphData } from '../utils/heightgraph';
+import { formatDuration } from '../utils/date-time';
+import HeightGraph from '../components/heightgraph';
 import { DrawControl } from './draw-control';
 import './map.css';
 import { convertDDToDMS } from './utils';
 import type { LastCenterStorageValue } from './types';
-import type { RootState } from '@/store';
+import type { RootState } from '../store';
 import type { AnyAction } from 'redux';
-import type { ThunkDispatch } from 'redux-thunk';
-import type { DirectionsState } from '@/reducers/directions';
-import type { IsochroneState } from '@/reducers/isochrones';
-import type { Profile } from '@/reducers/common';
-import type { ParsedDirectionsGeometry, Summary } from '@/common/types';
+import type { ThunkDispatch } from '@reduxjs/toolkit';
+import type { DirectionsState } from '../reducers/directions';
+import type { IsochroneState } from '../reducers/isochrones';
+import type { Profile } from '../reducers/common';
+import type { ParsedDirectionsGeometry, Summary } from '../common/types';
 import type { Feature, FeatureCollection, LineString } from 'geojson';
 
 // Import the style JSON
@@ -55,7 +55,7 @@ import mapStyle from './style.json';
 import cartoStyle from './carto.json';
 import { ResetBoundsControl, getInitialMapStyle } from './map-style-control';
 
-const centerCoords = process.env.REACT_APP_CENTER_COORDS!.split(',');
+const centerCoords = window.CENTER_COORDS!.split(',');
 
 let center: [number, number] = [
   parseFloat(centerCoords[1] || '13.393707'),
@@ -101,7 +101,7 @@ if (localStorage.getItem('last_center')) {
 const maxBounds: [[number, number], [number, number]] | undefined = undefined;
 
 const routeObjects = {
-  [VALHALLA_OSM_URL!]: {
+  [VALHALLA_URL!]: {
     color: '#0066ff',
     alternativeColor: '#66a3ff',
     name: 'OSM',
@@ -276,7 +276,7 @@ const MapComponent = ({
   const getHeight = useCallback((lng: number, lat: number) => {
     setIsHeightLoading(true);
     axios
-      .post(VALHALLA_OSM_URL + '/height', buildHeightRequest([[lat, lng]]), {
+      .post(VALHALLA_URL + '/height', buildHeightRequest([[lat, lng]]), {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -299,7 +299,7 @@ const MapComponent = ({
       setIsLocateLoading(true);
       axios
         .post(
-          VALHALLA_OSM_URL + '/locate',
+          VALHALLA_URL + '/locate',
           buildLocateRequest({ lng, lat }, profile),
           {
             headers: {
@@ -341,24 +341,24 @@ const MapComponent = ({
   const getHeightData = useCallback(() => {
     const { results } = directions;
 
-    if (!results[VALHALLA_OSM_URL!]?.data?.decodedGeometry) return;
+    if (!results[VALHALLA_URL!]?.data?.decodedGeometry) return;
 
     const heightPayloadNew = buildHeightRequest(
-      results[VALHALLA_OSM_URL!]!.data.decodedGeometry as [number, number][]
+      results[VALHALLA_URL!]!.data.decodedGeometry as [number, number][]
     );
 
     if (!R.equals(heightPayload, heightPayloadNew)) {
       setIsHeightLoading(true);
       setHeightPayload(heightPayloadNew);
       axios
-        .post(VALHALLA_OSM_URL + '/height', heightPayloadNew, {
+        .post(VALHALLA_URL + '/height', heightPayloadNew, {
           headers: {
             'Content-Type': 'application/json',
           },
         })
         .then(({ data }) => {
           const reversedGeometry = JSON.parse(
-            JSON.stringify(results[VALHALLA_OSM_URL!]!.data.decodedGeometry)
+            JSON.stringify(results[VALHALLA_URL!]!.data.decodedGeometry)
           ).map((pair: number[]) => {
             return [...pair.reverse()];
           });
@@ -437,16 +437,16 @@ const MapComponent = ({
     const { results } = directions;
 
     if (
-      !results[VALHALLA_OSM_URL!]?.data ||
-      Object.keys(results[VALHALLA_OSM_URL!]!.data).length === 0 ||
+      !results[VALHALLA_URL!]?.data ||
+      Object.keys(results[VALHALLA_URL!]!.data).length === 0 ||
       !directions.successful
     ) {
       setRouteGeoJSON(null);
       return;
     }
 
-    const response = results[VALHALLA_OSM_URL!]!.data;
-    const showRoutes = results[VALHALLA_OSM_URL!]!.show || {};
+    const response = results[VALHALLA_URL!]!.data;
+    const showRoutes = results[VALHALLA_URL!]!.show || {};
     const features: Feature<LineString>[] = [];
 
     // Add alternates
@@ -464,7 +464,7 @@ const MapComponent = ({
             coordinates: coords.map((c) => [c[1] ?? 0, c[0] ?? 0]),
           },
           properties: {
-            color: routeObjects[VALHALLA_OSM_URL!]!.alternativeColor,
+            color: routeObjects[VALHALLA_URL!]!.alternativeColor,
             type: 'alternate',
             summary,
           },
@@ -484,7 +484,7 @@ const MapComponent = ({
           coordinates: coords.map((c) => [c[1] ?? 0, c[0] ?? 0]),
         },
         properties: {
-          color: routeObjects[VALHALLA_OSM_URL!]!.color,
+          color: routeObjects[VALHALLA_URL!]!.color,
           type: 'main',
           summary,
         },
@@ -510,7 +510,7 @@ const MapComponent = ({
     const isoFeatures: Feature[] = [];
     const locationFeatures: Feature[] = [];
 
-    for (const provider of [VALHALLA_OSM_URL]) {
+    for (const provider of [VALHALLA_URL]) {
       if (
         results[provider!]?.data &&
         Object.keys(results[provider!]!.data).length > 0 &&
@@ -550,7 +550,7 @@ const MapComponent = ({
   useEffect(() => {
     const { highlightSegment, results } = directions;
 
-    if (!highlightSegment || !results[VALHALLA_OSM_URL!]?.data) {
+    if (!highlightSegment || !results[VALHALLA_URL!]?.data) {
       setHighlightSegmentGeoJSON(null);
       return;
     }
@@ -559,13 +559,13 @@ const MapComponent = ({
 
     let coords;
     if (alternate == -1) {
-      coords = results[VALHALLA_OSM_URL!]!.data.decodedGeometry;
+      coords = results[VALHALLA_URL!]!.data.decodedGeometry;
     } else {
-      if (!results[VALHALLA_OSM_URL!]!.data.alternates?.[alternate]) {
+      if (!results[VALHALLA_URL!]!.data.alternates?.[alternate]) {
         setHighlightSegmentGeoJSON(null);
         return;
       }
-      coords = (results[VALHALLA_OSM_URL!]!.data.alternates?.[
+      coords = (results[VALHALLA_URL!]!.data.alternates?.[
         alternate
       ] as ParsedDirectionsGeometry)!.decodedGeometry;
     }
@@ -1170,8 +1170,8 @@ const MapComponent = ({
             ) {
               // The heightgraph data has coordinates as [lng, lat, elevation, distance]
               // Find the coordinate closest to the hovered distance
-              let closestCoord = null;
-              let minDistanceDiff = Infinity;
+              let closestCoord: [number, number] | null = null;
+              let minDistanceDiff: number = Infinity;
 
               for (const feature of heightgraphData[0]?.features || []) {
                 if (feature.geometry.type === 'LineString') {
@@ -1313,14 +1313,6 @@ const MapComponent = ({
             </a>
           </div>
         </Map>
-
-        <button
-          className="ui primary button"
-          id="osm-button"
-          onClick={handleOpenOSM}
-        >
-          Open OSM
-        </button>
 
         {/* Height graph */}
         {directions.successful && (

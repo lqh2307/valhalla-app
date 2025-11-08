@@ -2,16 +2,14 @@ import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
 import * as R from 'ramda';
 import { Checkbox, Icon } from 'semantic-ui-react';
-import { showProvider } from '@/actions/directions-actions';
-
-import { downloadFile } from '@/actions/common-actions';
-// @ts-expect-error todo: json-format is not typed
+import { showProvider } from '../../actions/directions-actions';
+import { downloadFile } from '../../actions/common-actions';
 import jsonFormat from 'json-format';
-import { jsonConfig } from '@/controls/settings-options';
-import type { RootState } from '@/store';
-import type { ThunkDispatch } from 'redux-thunk';
+import { jsonConfig } from '../../controls/settings-options';
+import type { RootState } from '../../store';
+import type { ThunkDispatch } from '@reduxjs/toolkit';
 import type { AnyAction } from 'redux';
-import type { IsochroneState } from '@/reducers/isochrones';
+import type { IsochroneState } from '../../reducers/isochrones';
 
 interface SummaryProps {
   dispatch: ThunkDispatch<RootState, unknown, AnyAction>;

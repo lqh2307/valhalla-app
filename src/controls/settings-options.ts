@@ -1,4 +1,4 @@
-import type { BicycleType } from '@/common/types';
+import type { BicycleType } from '../common/types';
 
 const length = {
   name: 'Length',

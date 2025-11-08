@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
-import { colorMappings } from '@/utils/heightgraph';
-import makeResizable from '@/utils/resizable';
+import { colorMappings } from '../utils/heightgraph';
+import makeResizable from '../utils/resizable';
 import type { FeatureCollection, GeoJsonProperties, Geometry } from 'geojson';
 
 interface HeightGraphProps {

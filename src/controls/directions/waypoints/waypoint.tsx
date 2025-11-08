@@ -1,22 +1,22 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { connect } from 'react-redux';
-import { Search, Icon, Label, Popup } from 'semantic-ui-react';
+import { Search, Icon, Label, Popup, SearchResultProps } from 'semantic-ui-react';
 import {
   doRemoveWaypoint,
   updateTextInput,
   fetchGeocode,
   makeRequest,
   isWaypoint,
-} from '@/actions/directions-actions';
+} from '../../../actions/directions-actions';
 
-import { zoomTo } from '@/actions/common-actions';
-import { isValidCoordinates } from '@/utils/geom';
+import { zoomTo } from '../../../actions/common-actions';
+import { isValidCoordinates } from '../../../utils/geom';
 
 import { debounce } from 'throttle-debounce';
-import type { RootState } from '@/store';
+import type { RootState } from '../../../store';
 import type { AnyAction } from 'redux';
-import type { ThunkDispatch } from 'redux-thunk';
-import type { ActiveWaypoint } from '@/common/types';
+import type { ThunkDispatch } from '@reduxjs/toolkit';
+import type { ActiveWaypoint } from '../../../common/types';
 
 interface WaypointProps {
   index: number;
@@ -103,16 +103,16 @@ const Waypoint = ({
   );
 
   const resultRenderer = useCallback(
-    ({ title, description }) => (
+    (data: SearchResultProps) => (
       <div data-testid="search-result" className="flex-column">
         <div>
-          <span className="title">{title}</span>
+          <span className="title">{data.title}</span>
         </div>
-        {description && description.length > 0 && (
+        {data.description && data.description.length > 0 && (
           <div>
             <Icon disabled name="linkify" />
             <span className="description b">
-              <a target="_blank" rel="noopener noreferrer" href={description}>
+              <a target="_blank" rel="noopener noreferrer" href={data.description}>
                 OSM Link
               </a>
             </span>

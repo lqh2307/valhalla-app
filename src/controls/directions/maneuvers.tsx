@@ -5,10 +5,10 @@ import { Header, Icon, Divider, Popup } from 'semantic-ui-react';
 import {
   highlightManeuver,
   zoomToManeuver,
-} from '@/actions/directions-actions';
-import type { RootState } from '@/store';
-import type { ThunkDispatch } from 'redux-thunk';
-import type { Leg } from '@/common/types';
+} from '../../actions/directions-actions';
+import type { RootState } from '../../store';
+import type { ThunkDispatch } from '@reduxjs/toolkit';
+import type { Leg } from '../../common/types';
 import type { AnyAction } from 'redux';
 
 const getLength = (length: number) => {

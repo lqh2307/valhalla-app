@@ -4,21 +4,20 @@ import { Divider } from 'semantic-ui-react';
 
 import Waypoints from './waypoints';
 
-import { ProfilePicker } from '@/components/profile-picker';
-import { SettingsButton } from '@/components/settings-button';
-import { SettingsFooter } from '@/components/settings-footer';
+import { ProfilePicker } from '../../components/profile-picker';
+import { SettingsButton } from '../../components/settings-button';
 
 import {
   updateProfile,
   doShowSettings,
   updatePermalink,
   resetSettings,
-} from '@/actions/common-actions';
-import { makeIsochronesRequest } from '@/actions/isochrones-actions';
-import type { RootState } from '@/store';
+} from '../../actions/common-actions';
+import { makeIsochronesRequest } from '../../actions/isochrones-actions';
+import type { RootState } from '../../store';
 import type { AnyAction } from 'redux';
-import type { ThunkDispatch } from 'redux-thunk';
-import type { Profile } from '@/reducers/common';
+import type { ThunkDispatch } from '@reduxjs/toolkit';
+import type { Profile } from '../../reducers/common';
 
 interface IsochronesControlProps {
   profile: Profile;
@@ -92,8 +91,6 @@ const IsochronesControl = ({
           <SettingsButton handleSettings={handleSettings} />
         </div>
         <Waypoints />
-        <Divider fitted />
-        <SettingsFooter />
       </div>
     </React.Fragment>
   );

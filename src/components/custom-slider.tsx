@@ -5,9 +5,9 @@ import { type debounce } from 'throttle-debounce';
 import {
   settingsInit,
   settingsInitTruckOverride,
-} from '@/controls/settings-options';
-import type { RootState } from '@/store';
-import type { Profile } from '@/reducers/common';
+} from '../controls/settings-options';
+import type { RootState } from '../store';
+import type { Profile } from '../reducers/common';
 
 interface CustomSliderProps {
   settings: RootState['common']['settings'];
@@ -41,12 +41,7 @@ const CustomSlider = ({
     setSliderVal(parseFloat(String(settings[option.param] ?? 0)));
   }, [settings, option.param]);
 
-  // todo: in here, handle change can be undefined, number and string in same time.
-  // we should come up with better type instead of any
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleChange = (value?: any) => {
-    // reset
-
     if (isNaN(value)) {
       value =
         profile === 'truck'
