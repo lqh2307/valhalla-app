@@ -1,13 +1,7 @@
-import React from 'react';
-import { useControl } from 'react-map-gl/maplibre';
 import { MaplibreTerradrawControl } from '@watergis/maplibre-gl-terradraw';
 import '@watergis/maplibre-gl-terradraw/dist/maplibre-gl-terradraw.css';
-
-interface DrawControlProps {
-  position?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
-  onUpdate?: () => void;
-  controlRef?: React.MutableRefObject<MaplibreTerradrawControl | null>;
-}
+import { useControl } from 'react-map-gl/maplibre';
+import { DrawControlProps } from './types';
 
 export function DrawControl(props: DrawControlProps) {
   useControl<MaplibreTerradrawControl>(
@@ -25,6 +19,7 @@ export function DrawControl(props: DrawControlProps) {
 
       return control;
     },
+
     // onAdd
     () => {
       if (props.controlRef?.current && props.onUpdate) {
@@ -35,6 +30,7 @@ export function DrawControl(props: DrawControlProps) {
         }
       }
     },
+
     // onRemove
     () => {
       if (props.controlRef?.current && props.onUpdate) {

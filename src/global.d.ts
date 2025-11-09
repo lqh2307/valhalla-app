@@ -9,6 +9,8 @@ declare module '*.svg' {
   export default ReactComponent;
 }
 
+declare module '*.css';
+
 interface Window {
   NODE_ENV?: 'development' | 'production';
   SKIP_PREFLIGHT_CHECK?: boolean;
@@ -17,4 +19,9 @@ interface Window {
   TILE_SERVER_URL?: string;
   CENTER_COORDS?: string;
   MAX_BOUNDS?: string;
+  MAP_STYLES?: {
+    id: string;
+    label: string;
+    style: string;
+  }[];
 }

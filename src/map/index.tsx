@@ -38,7 +38,6 @@ import { buildHeightgraphData } from '../utils/heightgraph';
 import { formatDuration } from '../utils/date-time';
 import HeightGraph from '../components/heightgraph';
 import { DrawControl } from './draw-control';
-import './map.css';
 import { convertDDToDMS } from './utils';
 import type { LastCenterStorageValue } from './types';
 import type { RootState } from '../store';
@@ -51,9 +50,7 @@ import type { ParsedDirectionsGeometry, Summary } from '../common/types';
 import type { Feature, FeatureCollection, LineString } from 'geojson';
 
 // Import the style JSON
-import mapStyle from './style.json';
-import cartoStyle from './carto.json';
-import { ResetBoundsControl, getInitialMapStyle } from './map-style-control';
+import { ResetBoundsControl } from './map-style-control';
 
 const centerCoords = window.CENTER_COORDS!.split(',');
 
@@ -183,9 +180,7 @@ const MapComponent = ({
     latitude: center[1],
     zoom: zoom_initial,
   });
-  const [currentMapStyle, setCurrentMapStyle] = useState<
-    'shortbread' | 'carto'
-  >(getInitialMapStyle);
+  const [currentMapStyleId, setCurrentMapStyleId] = useState<string>(localStorage.getItem('last_style') as string);
 
   const mapRef = useRef<MapRef>(null);
   const drawRef = useRef<MaplibreTerradrawControl | null>(null);
@@ -197,18 +192,8 @@ const MapComponent = ({
   );
 
   // Handle map style changes
-  const handleStyleChange = useCallback((style: 'shortbread' | 'carto') => {
-    setCurrentMapStyle(style);
-
-    // Update URL params (only add 'style' param if not shortbread)
-    const url = new URL(window.location.href);
-    if (style === 'carto') {
-      url.searchParams.set('style', 'carto');
-    } else {
-      // Remove style param for shortbread (it's the default)
-      url.searchParams.delete('style');
-    }
-    window.history.replaceState({}, '', url.toString());
+  const handleStyleChange = useCallback((style: string) => {
+    setCurrentMapStyleId(style);
   }, []);
 
   const updateExcludePolygons = useCallback(() => {
@@ -1031,15 +1016,11 @@ const MapComponent = ({
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
           interactiveLayerIds={['routes-line']}
-          mapStyle={
-            (currentMapStyle === 'carto'
-              ? cartoStyle
-              : mapStyle) as unknown as maplibregl.StyleSpecification
-          }
+          mapStyle={window.MAP_STYLES?.find(style => style.id === currentMapStyleId)?.style || 'americanamap'}
           style={{ width: '100%', height: '100vh' }}
           maxBounds={maxBounds}
-          minZoom={2}
-          maxZoom={18}
+          minZoom={0}
+          maxZoom={22}
           data-testid="map"
         >
           <NavigationControl position="top-right" />

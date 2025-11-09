@@ -1,27 +1,28 @@
-import Map from './map';
-import MainControl from './controls';
 import SettingsPanel from './controls/settings-panel';
 import { ToastContainer } from 'react-toastify';
+import MainControl from './controls';
+import { Box } from '@mui/material';
+import Map from './map';
 
 export const App = () => {
   return (
-    <div>
+    <Box>
       <Map />
       <MainControl />
       <SettingsPanel />
       <ToastContainer
-        position="bottom-center"
+        position={"bottom-center"}
         autoClose={5000}
         limit={1}
         hideProgressBar={false}
         newestOnTop={false}
-        closeOnClick
+        closeOnClick={true}
         rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
+        pauseOnFocusLoss={true}
+        draggable={"touch"}
+        pauseOnHover={true}
+        theme={"light"}
       />
-    </div>
+    </Box>
   );
 };

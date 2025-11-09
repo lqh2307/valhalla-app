@@ -1,19 +1,7 @@
-import { useEffect, useState } from 'react';
-
-import { createPortal } from 'react-dom';
-
+import { controlPositions, CustomControlProps } from './types';
 import type { PropsWithChildren, ReactNode } from 'react';
-
-type CustomControlProps = {
-  position: keyof typeof controlPositions;
-};
-
-const controlPositions = {
-  topLeft: '.maplibregl-ctrl-top-left',
-  topRight: '.maplibregl-ctrl-top-right',
-  bottomLeft: '.maplibregl-ctrl-bottom-left',
-  bottomRight: '.maplibregl-ctrl-bottom-right',
-};
+import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 export const CustomControl = ({
   position,

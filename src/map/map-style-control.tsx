@@ -1,59 +1,10 @@
+import { MapStyleOptionProps, ResetBoundsControlProps } from './types';
+import { ControlButton, CustomControl } from './custom-control';
 import { useState, useEffect, useMemo, memo } from 'react';
+import Map, { useMap } from 'react-map-gl/maplibre';
 import { Popup } from 'semantic-ui-react';
 import { LayersIcon } from 'lucide-react';
-import Map, { useMap } from 'react-map-gl/maplibre';
-import type maplibregl from 'maplibre-gl';
-import { ControlButton, CustomControl } from './custom-control';
-
-import shortbreadStyle from './style.json';
-import cartoStyle from './carto.json';
-
-export const MAP_STYLE_STORAGE_KEY = 'selectedMapStyle';
-
-type MapStyleType = 'shortbread' | 'carto';
-
-// Map style configurations
-const MAP_STYLES = [
-  {
-    id: 'shortbread',
-    label: 'Shortbread',
-    style: shortbreadStyle,
-  },
-  {
-    id: 'carto',
-    label: 'Carto',
-    style: cartoStyle,
-  },
-] as const;
-
-export const getInitialMapStyle = (): MapStyleType => {
-  // check url params first
-  const urlParams = new URLSearchParams(window.location.search);
-  const styleParam = urlParams.get('style');
-  if (styleParam === 'carto' || styleParam === 'shortbread') {
-    return styleParam;
-  }
-
-  // fallback to localStorage
-  const savedStyle = localStorage.getItem(MAP_STYLE_STORAGE_KEY);
-  return savedStyle === 'shortbread' || savedStyle === 'carto'
-    ? savedStyle
-    : 'shortbread';
-};
-
-interface ResetBoundsControlProps {
-  onStyleChange?: (style: MapStyleType) => void;
-}
-
-interface MapStyleOptionProps {
-  id: MapStyleType;
-  label: string;
-  style: typeof shortbreadStyle | typeof cartoStyle;
-  isSelected: boolean;
-  onSelect: (id: MapStyleType) => void;
-  mapCenter: { lng: number; lat: number } | undefined;
-  zoom: number | undefined;
-}
+import { Box } from '@mui/material';
 
 const MapStyleOption = memo(
   ({
@@ -66,14 +17,11 @@ const MapStyleOption = memo(
     zoom,
   }: MapStyleOptionProps) => {
     // Memoize the map style to prevent unnecessary re-renders
-    const memoizedMapStyle = useMemo(
-      () => style as unknown as maplibregl.StyleSpecification,
-      [style]
-    );
+    const memoizedMapStyle = useMemo(() => style, [style]);
 
     return (
-      <div>
-        <div
+      <Box>
+        <Box
           onClick={() => onSelect(id)}
           style={{
             border: `3px solid ${isSelected ? '#2185d0' : 'transparent'}`,
@@ -85,7 +33,7 @@ const MapStyleOption = memo(
         >
           <Map
             id={`${id}-map`}
-            onMove={() => {}}
+            onMove={() => { }}
             longitude={mapCenter?.lng}
             latitude={mapCenter?.lat}
             zoom={zoom}
@@ -102,8 +50,8 @@ const MapStyleOption = memo(
             dragRotate={false}
             interactive={false}
           />
-        </div>
-        <div
+        </Box>
+        <Box
           style={{
             marginTop: '6px',
             fontSize: '13px',
@@ -113,30 +61,26 @@ const MapStyleOption = memo(
           }}
         >
           {label}
-        </div>
-      </div>
+        </Box>
+      </Box>
     );
   }
 );
 
 MapStyleOption.displayName = 'MapStyleOption';
 
-export const ResetBoundsControl = ({
-  onStyleChange,
-}: ResetBoundsControlProps) => {
+export const ResetBoundsControl = (props: ResetBoundsControlProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedStyle, setSelectedStyle] =
-    useState<MapStyleType>(getInitialMapStyle);
+  const [selectedStyleId, setSelectedStyleId] = useState<string>(localStorage.getItem('last_style') as string);
 
   const { current: map } = useMap();
-  const mapCenter = map?.getCenter();
-  const zoom = map?.getZoom();
 
-  // Save to localStorage whenever selectedStyle changes
+  // Save to localStorage whenever selectedStyleId changes
   useEffect(() => {
-    localStorage.setItem(MAP_STYLE_STORAGE_KEY, selectedStyle);
-    onStyleChange?.(selectedStyle);
-  }, [selectedStyle, onStyleChange]);
+    localStorage.setItem('last_style', selectedStyleId);
+
+    props.onStyleChange?.(selectedStyleId);
+  }, [selectedStyleId, props.onStyleChange]);
 
   const toggleDrawer = () => {
     setIsOpen((prevState) => !prevState);
@@ -145,11 +89,11 @@ export const ResetBoundsControl = ({
   // Memoize the map options to prevent re-creating them on every render
   const mapOptions = useMemo(
     () =>
-      MAP_STYLES.map((mapStyle) => ({
+      (window.MAP_STYLES || []).map((mapStyle) => ({
         ...mapStyle,
-        isSelected: selectedStyle === mapStyle.id,
+        isSelected: selectedStyleId === mapStyle.id,
       })),
-    [selectedStyle]
+    [selectedStyleId]
   );
 
   return (
@@ -165,7 +109,7 @@ export const ResetBoundsControl = ({
       }
       content={
         isOpen ? (
-          <div
+          <Box
             style={{
               display: 'flex',
               flexDirection: 'column',
@@ -179,12 +123,12 @@ export const ResetBoundsControl = ({
                 label={mapOption.label}
                 style={mapOption.style}
                 isSelected={mapOption.isSelected}
-                onSelect={setSelectedStyle}
-                mapCenter={mapCenter}
-                zoom={zoom}
+                onSelect={setSelectedStyleId}
+                mapCenter={map?.getCenter()}
+                zoom={map?.getZoom()}
               />
             ))}
-          </div>
+          </Box>
         ) : null
       }
       on="click"
