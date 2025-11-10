@@ -7,9 +7,9 @@ MODULE_NAME := ms-fe-routing
 MODULE_VERSION := $(shell git describe --tags)
 
 # Debian infos
-DEB_REGISTRY ?= http://172.31.252.188:8081/repository/chdk-apt-hosted/
-DEB_USER ?= chdk
-DEB_PASSWORD ?= 123456aA@
+DEB_REGISTRY ?= https://deb.registry.vn/app
+DEB_USER ?= admin
+DEB_PASSWORD ?= admin
 DEB_PACKAGE ?= ${MODULE_NAME}
 DEB_VERSION ?= ${MODULE_VERSION}
 DEB_ARCHITECTURE ?= amd64
@@ -20,10 +20,10 @@ DEB_RECOMMENDS ?=
 DEB_DESCRIPTION ?= Service for managing ${DEB_PACKAGE}
 
 # Docker infos
-DOCKER_REGISTRY ?= registry.c4i.vn
-DOCKER_PROJECT ?= map-server
+DOCKER_REGISTRY ?= lqh2307
+DOCKER_PROJECT ?= app
 DOCKER_USER ?= admin
-DOCKER_PASSWORD ?= Vht@2021
+DOCKER_PASSWORD ?= admin
 DOCKER_IMAGE_NAME ?= ${MODULE_NAME}
 DOCKER_IMAGE_VERSION ?= ${MODULE_VERSION}
 DOCKER_IMAGE := ${DOCKER_REGISTRY}/${DOCKER_PROJECT}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_VERSION}
