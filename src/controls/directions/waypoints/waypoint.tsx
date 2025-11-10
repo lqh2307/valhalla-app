@@ -1,6 +1,12 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { connect } from 'react-redux';
-import { Search, Icon, Label, Popup, SearchResultProps } from 'semantic-ui-react';
+import {
+  Search,
+  Icon,
+  Label,
+  Popup,
+  SearchResultProps,
+} from 'semantic-ui-react';
 import {
   doRemoveWaypoint,
   updateTextInput,
@@ -8,10 +14,8 @@ import {
   makeRequest,
   isWaypoint,
 } from '../../../actions/directions-actions';
-
 import { zoomTo } from '../../../actions/common-actions';
 import { isValidCoordinates } from '../../../utils/geom';
-
 import { debounce } from 'throttle-debounce';
 import type { RootState } from '../../../store';
 import type { AnyAction } from 'redux';
@@ -112,7 +116,11 @@ const Waypoint = ({
           <div>
             <Icon disabled name="linkify" />
             <span className="description b">
-              <a target="_blank" rel="noopener noreferrer" href={data.description}>
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href={data.description}
+              >
                 OSM Link
               </a>
             </span>

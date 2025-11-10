@@ -1,5 +1,6 @@
 import type { NominationResponse } from '../common/types';
 import axios from 'axios';
+import { Point } from '../types/Spatial';
 
 export const NOMINATIM_URL = `${window.NOMINATIM_URL}/search`;
 export const NOMINATIME_URL_REVERSE = `${window.NOMINATIM_URL}/reverse`;
@@ -24,7 +25,7 @@ export const reverse_geocode = (lon: number, lat: number) =>
 
 export const parseGeocodeResponse = (
   results: NominationResponse | NominationResponse[],
-  lngLat: [number, number]
+  lngLat: Point
 ) => {
   if (!Array.isArray(results)) {
     results = [results];

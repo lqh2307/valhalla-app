@@ -7,13 +7,9 @@ import type {
   Settings,
   ValhallaRouteResponse,
 } from '../common/types';
+import { Lnglat, Point } from '../types/Spatial';
 
-export const VALHALLA_URL = window.VALHALLA_URL;
-
-export const buildLocateRequest = (
-  latLng: { lat: number; lng: number },
-  profile: Profile
-) => {
+export const buildLocateRequest = (latLng: Lnglat, profile: Profile) => {
   let valhalla_profile = profile;
   if (profile === 'car') {
     valhalla_profile = 'auto';
@@ -24,7 +20,7 @@ export const buildLocateRequest = (
   };
 };
 
-export const buildHeightRequest = (latLngs: [number, number][]) => {
+export const buildHeightRequest = (latLngs: Point[]) => {
   const shape: { lat: number; lon: number }[] = [];
   for (const latLng of latLngs) {
     shape.push({ lat: latLng[0], lon: latLng[1] });

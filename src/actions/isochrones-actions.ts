@@ -13,7 +13,7 @@ import {
   forward_geocode,
   parseGeocodeResponse,
 } from '../utils/nominatim';
-import { VALHALLA_URL, buildIsochronesRequest } from '../utils/valhalla';
+import { buildIsochronesRequest } from '../utils/valhalla';
 
 import {
   sendMessage,
@@ -21,16 +21,17 @@ import {
   updatePermalink,
   filterProfileSettings,
 } from './common-actions';
-import { calcArea } from '../utils/geom';
 import type {
   ActiveWaypoint,
   NominationResponse,
   ThunkResult,
   ValhallaIsochroneResponse,
 } from '../common/types';
+import { calcArea } from '../utils/Spatial';
+import { Point } from '../types/Spatial';
 
 const serverMapping = {
-  [VALHALLA_URL!]: 'OSM',
+  [window.VALHALLA_URL!]: 'OSM',
 };
 
 export const makeIsochronesRequest =
@@ -43,8 +44,6 @@ export const makeIsochronesRequest =
     // @ts-expect-error todo: this is not correct. initial settings and filtered settings are not the same but we are changing in later.
     // we should find a better way to do this.
     settings = filterProfileSettings(profile, settings);
-
-    // console.log(settings)
 
     // if center is selected
     let center: ActiveWaypoint | undefined = undefined;
@@ -78,7 +77,7 @@ const fetchValhallaIsochrones =
     (dispatch) => {
       dispatch(showLoading(true));
 
-      for (const URL of [VALHALLA_URL]) {
+      for (const URL of [window.VALHALLA_URL]) {
         axios
           .get<ValhallaIsochroneResponse>(URL + '/isochrone', {
             params: { json: JSON.stringify(valhallaRequest.json) },
@@ -190,15 +189,12 @@ export const fetchReverseGeocodeIso =
           dispatch(processGeocodeResponse(response.data, true, [lng, lat]));
         })
         .catch((error) => {
-          console.log(error);
+          console.error(error);
         });
-      // .finally(() => {
-      //   // always executed
-      // })
     };
 
 export const fetchGeocode =
-  (userInput: string, lngLat?: [number, number]): ThunkResult =>
+  (userInput: string, lngLat?: Point): ThunkResult =>
     (dispatch) => {
       dispatch({
         type: REQUEST_GEOCODE_RESULTS_ISO,
@@ -227,17 +223,13 @@ export const fetchGeocode =
             dispatch(processGeocodeResponse(response.data));
           })
           .catch((error) => {
-            console.log(error);
+            console.error(error);
           });
       }
     };
 
 const processGeocodeResponse =
-  (
-    data: NominationResponse,
-    reverse?: boolean,
-    lngLat?: [number, number]
-  ): ThunkResult =>
+  (data: NominationResponse, reverse?: boolean, lngLat?: Point): ThunkResult =>
     (dispatch) => {
       const addresses = parseGeocodeResponse(data, lngLat!);
       // if no address can be found

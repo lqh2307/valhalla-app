@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
-import { Header, Icon, Divider, Popup } from 'semantic-ui-react';
+import { Header, Icon, Popup } from 'semantic-ui-react';
 
 import {
   highlightManeuver,
@@ -10,6 +10,7 @@ import type { RootState } from '../../store';
 import type { ThunkDispatch } from '@reduxjs/toolkit';
 import type { Leg } from '../../common/types';
 import type { AnyAction } from 'redux';
+import { Divider } from '@mui/material';
 
 const getLength = (length: number) => {
   const visibleLength = length * 1000;
@@ -148,9 +149,7 @@ const Maneuvers = ({ dispatch, legs, idx }: ManeuversProps) => {
                 </div>
               )}
             </div>
-            {mnv.type !== 4 && mnv.type !== 5 && mnv.type !== 6 && (
-              <Divider fitted />
-            )}
+            {mnv.type !== 4 && mnv.type !== 5 && mnv.type !== 6 && <Divider />}
           </React.Fragment>
         ))
       )}

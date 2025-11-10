@@ -1,14 +1,13 @@
-import { useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
-import { Segment, Divider } from 'semantic-ui-react';
-
+import { Segment } from 'semantic-ui-react';
 import Summary from './summary';
 import { makeIsochronesRequest } from '../../actions/isochrones-actions';
 import ContoursInformation from './contours-information';
-import { VALHALLA_URL } from '../../utils/valhalla';
 import type { RootState } from '../../store';
 import type { ThunkDispatch } from '@reduxjs/toolkit';
 import type { AnyAction } from 'redux';
+import React from 'react';
+import { Divider } from '@mui/material';
 
 interface OutputControlProps {
   dispatch: ThunkDispatch<RootState, unknown, AnyAction>;
@@ -21,13 +20,13 @@ const OutputControl = ({
   activeTab,
   successful,
 }: OutputControlProps) => {
-  const prevPropsRef = useRef<{ activeTab: number }>({ activeTab });
+  const prevPropsRef = React.useRef<{ activeTab: number }>({ activeTab });
 
   // Handle activeTab changes - make API request when switching from directions to isochrones tab
   // necessary to calculate new routes the tab was changed from isochrone tab
   // need to do this every time, because "profile" is global (otherwise we would
   // calculate new when the profile was changed while being on the iso tab)
-  useEffect(() => {
+  React.useEffect(() => {
     if (
       prevPropsRef.current &&
       activeTab === 1 &&
@@ -37,7 +36,7 @@ const OutputControl = ({
     }
   }, [activeTab, dispatch]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     prevPropsRef.current = { activeTab };
   });
 
@@ -54,10 +53,10 @@ const OutputControl = ({
     >
       <div className="flex-column">
         <div className="flex justify-between pointer">
-          <Summary provider={VALHALLA_URL!} />
+          <Summary provider={window.VALHALLA_URL!} />
         </div>
         <Divider />
-        <ContoursInformation provider={VALHALLA_URL!} />
+        <ContoursInformation provider={window.VALHALLA_URL!} />
       </div>
     </Segment>
   );

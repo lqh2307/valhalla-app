@@ -14,16 +14,22 @@
     "react-dom": ">=18.0.0"
   },
   "dependencies": {
+    "react-window": "2.2.3",
+    "mime": "4.1.0",
+    "async-mutex": "0.5.0",
+    "ajv": "8.17.1",
+    "react-hotkeys-hook": "5.2.1",
     "@emotion/react": "11.14.0",
     "@emotion/styled": "11.14.1",
+    "@mui/lab": "7.0.1-beta.19",
     "@mui/material": "7.3.5",
+    "@mui/icons-material": "7.3.5",
     "@turf/turf": "7.2.0",
     "@watergis/maplibre-gl-terradraw": "1.9.6",
     "axios": "1.13.2",
     "d3": "7.9.0",
     "date-fns": "4.1.0",
     "json-format": "1.0.1",
-    "lucide-react": "0.553.0",
     "maplibre-gl": "5.12.0",
     "prop-types": "15.8.1",
     "ramda": "0.32.0",
@@ -42,6 +48,8 @@
     "throttle-debounce": "5.0.2"
   },
   "devDependencies": {
+    "@types/react-window": "2.0.0",
+    "@types/ajv": "1.0.4",
     "@svgr/core": "8.1.0",
     "@svgr/plugin-jsx": "8.1.0",
     "@types/d3": "7.4.3",
@@ -50,6 +58,7 @@
     "@types/react-beautiful-dnd": "13.1.8",
     "@types/react-copy-to-clipboard": "5.0.7",
     "@types/react-dom": "18.2.0",
+    "@types/axios": "0.14.4",
     "@types/throttle-debounce": "5.0.2",
     "@types/turf": "3.5.32",
     "react-scripts": "5.0.1",
@@ -62,7 +71,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "deploy": "gh-pages -d build",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "format": "prettier --write \"src/**/*.{ts,tsx,css}\""
   },
   "browserslist": {
     "production": [

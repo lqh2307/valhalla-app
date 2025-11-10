@@ -1,11 +1,8 @@
 import React, { useCallback } from 'react';
 import { connect } from 'react-redux';
-
 import { Icon, Checkbox, Popup } from 'semantic-ui-react';
 import { showProvider } from '../../actions/directions-actions';
-
 import { formatDuration } from '../../utils/date-time';
-import { VALHALLA_URL } from '../../utils/valhalla';
 import type { RootState } from '../../store';
 import type { DirectionsState } from '../../reducers/directions';
 import type { ThunkDispatch } from '@reduxjs/toolkit';
@@ -125,8 +122,8 @@ const Summary = ({
           <Checkbox
             slider
             label="Map"
-            checked={results[VALHALLA_URL!]!.show[idx]}
-            provider={VALHALLA_URL}
+            checked={results[window.VALHALLA_URL!]!.show[idx]}
+            provider={window.VALHALLA_URL}
             onChange={handleChange}
           />
         </div>

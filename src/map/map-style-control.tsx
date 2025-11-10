@@ -1,131 +1,133 @@
-import { MapStyleOptionProps, ResetBoundsControlProps } from './types';
-import { ControlButton, CustomControl } from './custom-control';
-import { useState, useEffect, useMemo, memo } from 'react';
-import Map, { useMap } from 'react-map-gl/maplibre';
+import { TooltipButton } from '../components/TooltipButton';
+import { getValue, setValue } from '../utils/LocalStorage';
+import { LoadingImage } from '../components/LoadingImage';
+import { CustomControl } from './custom-control';
+import { Layers } from '@mui/icons-material';
 import { Popup } from 'semantic-ui-react';
-import { LayersIcon } from 'lucide-react';
+import { Lnglat } from '../types/Spatial';
 import { Box } from '@mui/material';
+import React from 'react';
+import {
+  LastPositionLocalStorage,
+  ResetBoundsControlProps,
+  MapStyleLocalStorage,
+} from './types';
 
-const MapStyleOption = memo(
-  ({
-    id,
-    label,
-    style,
-    isSelected,
-    onSelect,
-    mapCenter,
-    zoom,
-  }: MapStyleOptionProps) => {
-    // Memoize the map style to prevent unnecessary re-renders
-    const memoizedMapStyle = useMemo(() => style, [style]);
+export function getMapStyleById(id: string): MapStyleLocalStorage {
+  return window.MAP_STYLES.find((item) => item.id === id);
+}
 
-    return (
-      <Box>
-        <Box
-          onClick={() => onSelect(id)}
-          style={{
-            border: `3px solid ${isSelected ? '#2185d0' : 'transparent'}`,
-            borderRadius: '4px',
-            cursor: 'pointer',
-            transition: 'border-color 0.2s ease',
-            overflow: 'hidden',
-          }}
-        >
-          <Map
-            id={`${id}-map`}
-            onMove={() => { }}
-            longitude={mapCenter?.lng}
-            latitude={mapCenter?.lat}
-            zoom={zoom}
-            attributionControl={false}
-            style={{
-              width: '226px',
-              height: '64px',
-              display: 'block',
-            }}
-            mapStyle={memoizedMapStyle}
-            boxZoom={false}
-            doubleClickZoom={false}
-            dragPan={false}
-            dragRotate={false}
-            interactive={false}
-          />
-        </Box>
-        <Box
-          style={{
-            marginTop: '6px',
-            fontSize: '13px',
-            fontWeight: isSelected ? 'bold' : 'normal',
-            color: isSelected ? '#2185d0' : '#666',
-            textAlign: 'center',
-          }}
-        >
-          {label}
-        </Box>
-      </Box>
-    );
+export function getMapStyle(): MapStyleLocalStorage {
+  let mapStyle = window.MAP_STYLE;
+
+  const lastPosition: LastPositionLocalStorage = getValue('last_position');
+  if (lastPosition) {
+    if (lastPosition.style !== undefined) {
+      mapStyle = lastPosition.style;
+    }
   }
-);
 
-MapStyleOption.displayName = 'MapStyleOption';
+  return mapStyle;
+}
+
+export function getCenter(): Lnglat {
+  let center = window.CENTER;
+
+  const lastPosition: LastPositionLocalStorage = getValue('last_position');
+  if (lastPosition) {
+    if (lastPosition.center !== undefined) {
+      center = lastPosition.center;
+    }
+  }
+
+  return center;
+}
+
+export function getZoom(): number {
+  let zoom = window.ZOOM;
+
+  const lastPosition: LastPositionLocalStorage = getValue('last_position');
+  if (lastPosition) {
+    if (lastPosition.zoom !== undefined) {
+      zoom = lastPosition.zoom;
+    }
+  }
+
+  return zoom;
+}
+
+export function updateLocalStorage(value: LastPositionLocalStorage): void {
+  setValue('last_position', {
+    ...(getValue('last_position') || {}),
+    ...value,
+  });
+}
 
 export const ResetBoundsControl = (props: ResetBoundsControlProps) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedStyleId, setSelectedStyleId] = useState<string>(localStorage.getItem('last_style') as string);
-
-  const { current: map } = useMap();
+  const [isOpen, setIsOpen] = React.useState<boolean>(false);
+  const [selectedStyleId, setSelectedStyleId] = React.useState<string>(
+    getMapStyle().id
+  );
 
   // Save to localStorage whenever selectedStyleId changes
-  useEffect(() => {
-    localStorage.setItem('last_style', selectedStyleId);
+  React.useEffect(() => {
+    const mapStyle = getMapStyleById(selectedStyleId);
+    if (mapStyle) {
+      updateLocalStorage({
+        style: mapStyle,
+      });
 
-    props.onStyleChange?.(selectedStyleId);
+      props.onStyleChange?.(selectedStyleId);
+    }
   }, [selectedStyleId, props.onStyleChange]);
 
   const toggleDrawer = () => {
     setIsOpen((prevState) => !prevState);
   };
 
-  // Memoize the map options to prevent re-creating them on every render
-  const mapOptions = useMemo(
-    () =>
-      (window.MAP_STYLES || []).map((mapStyle) => ({
-        ...mapStyle,
-        isSelected: selectedStyleId === mapStyle.id,
-      })),
-    [selectedStyleId]
-  );
-
   return (
     <Popup
       trigger={
-        <CustomControl position="topRight">
-          <ControlButton
-            title="Map Styles"
+        <CustomControl position={'top-right'}>
+          <TooltipButton
+            icon={<Layers sx={{ fontSize: '29px' }} />}
             onClick={toggleDrawer}
-            icon={<LayersIcon size={17} />}
+            title={'Map Styles'}
+            titlePlacement={'left'}
           />
         </CustomControl>
       }
+      position="bottom right"
       content={
         isOpen ? (
           <Box
-            style={{
+            sx={{
               display: 'flex',
               flexDirection: 'column',
-              gap: '10px',
+              gap: '0.5rem',
+              height: '12rem',
+              overflowY: 'scroll',
             }}
           >
-            {mapOptions.map((mapOption) => (
-              <MapStyleOption
-                key={mapOption.id}
-                id={mapOption.id}
-                label={mapOption.label}
-                style={mapOption.style}
-                isSelected={mapOption.isSelected}
-                onSelect={setSelectedStyleId}
-                mapCenter={map?.getCenter()}
-                zoom={map?.getZoom()}
+            {window.MAP_STYLES.map((item) => (
+              <TooltipButton
+                sx={{
+                  backgroundColor:
+                    item.id === selectedStyleId ? '#555555' : undefined,
+                }}
+                icon={
+                  <LoadingImage
+                    width={'5rem'}
+                    height={'5rem'}
+                    alt={item.label}
+                    src={item.image}
+                    fallbackSrc={`${window.BASE_URL}/assets/images/placeholder.png`}
+                  />
+                }
+                value={item.id}
+                onClick={setSelectedStyleId}
+                title={item.label}
+                titlePlacement={'left'}
               />
             ))}
           </Box>

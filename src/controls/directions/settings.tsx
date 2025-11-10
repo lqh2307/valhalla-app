@@ -1,3 +1,4 @@
+import React from 'react';
 import { Button, Popup, Icon } from 'semantic-ui-react';
 
 export const Settings = ({

@@ -7,10 +7,11 @@ import {
   TOGGLE_PROVIDER_ISO,
   CLEAR_ISOS,
 } from '../actions/types';
-
-import { VALHALLA_URL } from '../utils/valhalla';
 import type { AnyAction } from 'redux';
-import type { ActiveWaypoint, ValhallaIsochroneResponse } from '../common/types';
+import type {
+  ActiveWaypoint,
+  ValhallaIsochroneResponse,
+} from '../common/types';
 
 interface IsochroneResult {
   data: ValhallaIsochroneResponse;
@@ -41,7 +42,7 @@ const initialState: IsochroneState = {
   denoise: 0.1,
   generalize: 0,
   results: {
-    [VALHALLA_URL!]: {
+    [window.VALHALLA_URL!]: {
       data: {},
       show: true,
     } as any,

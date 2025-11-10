@@ -1,9 +1,6 @@
 import React, { useEffect, useCallback, useRef } from 'react';
 import { connect } from 'react-redux';
-import { Divider } from 'semantic-ui-react';
-
 import Waypoints from './waypoints';
-
 import { ProfilePicker } from '../../components/profile-picker';
 import { SettingsButton } from '../../components/settings-button';
 

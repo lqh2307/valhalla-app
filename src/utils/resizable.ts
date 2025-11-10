@@ -11,7 +11,7 @@ interface ResizableOptions {
 
 interface ResizeState {
   resizing: boolean;
-  activeHandle: HandleType | null;
+  activeHandle: HandleType;
   startX: number;
   startY: number;
   startWidth: number;

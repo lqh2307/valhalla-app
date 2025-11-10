@@ -1,4 +1,6 @@
-type Coordinate = [number, number]; // [latitude, longitude]
+import { Point } from '../types/Spatial';
+
+type Coordinate = Point; // [latitude, longitude]
 type RangeHeightPoint = [number, number]; // [distance, elevation]
 type LineStringCoordinate = [number, number, number, number]; // [longitude, latitude, elevation, distance]
 type HeightClass = -5 | -4 | -3 | -2 | -1 | 0 | 1 | 2 | 3 | 4 | 5;

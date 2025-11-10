@@ -1,24 +1,21 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
+    "target": "es6",
     "lib": [
-      "DOM",
-      "DOM.Iterable",
-      "ES2022"
+      "dom",
+      "dom.iterable",
+      "esnext"
     ],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
+    "strict": false,
+    "strictNullChecks": false,
     "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "noEmit": true,
-    "isolatedModules": true,
-    "module": "ESNext",
-    "noImplicitAny": false,
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "jsx": "react-jsx",
+    "jsx": "react",
+    "module": "es6",
+    "outDir": "./build",
+    "rootDir": "./src",
+    "ignoreDeprecations": "6.0",
+    "moduleResolution": "node10",
+    "resolveJsonModule": true
   },
   "include": [
     "src/**/*"

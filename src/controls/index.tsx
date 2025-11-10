@@ -27,7 +27,6 @@ import {
   fetchReverseGeocodeIso,
   updateIsoSettings,
 } from '../actions/isochrones-actions';
-import { VALHALLA_URL } from '../utils/valhalla';
 import type { RootState } from '../store';
 import type { AnyAction } from 'redux';
 import type { ThunkDispatch } from '@reduxjs/toolkit';
@@ -53,11 +52,11 @@ interface MainControlProps {
 
 const MainControl = (props: MainControlProps) => {
   const { activeTab } = props;
-  const [lastUpdate, setLastUpdate] = React.useState<Date | null>(null);
-  const prevMessageRef = React.useRef<number | null>(null);
+  const [lastUpdate, setLastUpdate] = React.useState<Date>(null);
+  const prevMessageRef = React.useRef<number>(null);
 
   const getLastUpdate = async () => {
-    const response = await fetch(`${VALHALLA_URL}/status`);
+    const response = await fetch(`${window.VALHALLA_URL}/status`);
     const data = await response.json();
     setLastUpdate(new Date(data.tileset_last_modified * 1000));
   };

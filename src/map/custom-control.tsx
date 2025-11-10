@@ -1,18 +1,15 @@
-import { controlPositions, CustomControlProps } from './types';
-import type { PropsWithChildren, ReactNode } from 'react';
-import { useEffect, useState } from 'react';
+import React, { type PropsWithChildren } from 'react';
+import { CustomControlProps } from './types';
 import { createPortal } from 'react-dom';
 
-export const CustomControl = ({
-  position,
-  children,
-}: PropsWithChildren<CustomControlProps>) => {
-  const [groupContainer, setGroupContainer] = useState<HTMLDivElement | null>(
-    null
-  );
+export const CustomControl = (props: PropsWithChildren<CustomControlProps>) => {
+  const [groupContainer, setGroupContainer] =
+    React.useState<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const parentElement = document.querySelector(controlPositions[position]);
+  React.useEffect(() => {
+    const parentElement = document.querySelector(
+      `.maplibregl-ctrl-${props.position}`
+    );
     const groupDiv = document.createElement('div');
 
     if (parentElement) {
@@ -29,23 +26,9 @@ export const CustomControl = ({
     };
   }, []);
 
-  if (!groupContainer) return null;
+  if (!groupContainer) {
+    return null;
+  }
 
-  return createPortal(<>{children}</>, groupContainer);
-};
-
-type ControlButtonProps = {
-  title: string;
-  onClick: () => void;
-  icon: ReactNode;
-};
-
-export const ControlButton = ({ title, onClick, icon }: ControlButtonProps) => {
-  return (
-    <button type="button" aria-label={title} title={title} onClick={onClick}>
-      <span className="flex justify-center items-center" aria-hidden={true}>
-        {icon}
-      </span>
-    </button>
-  );
+  return createPortal(<>{props.children}</>, groupContainer);
 };

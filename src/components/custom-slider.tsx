@@ -1,4 +1,3 @@
-import { Fragment, useState, useEffect } from 'react';
 import { Form, Label, Popup, Icon } from 'semantic-ui-react';
 import { Slider } from '@mui/material';
 import { type debounce } from 'throttle-debounce';
@@ -8,6 +7,7 @@ import {
 } from '../controls/settings-options';
 import type { RootState } from '../store';
 import type { Profile } from '../reducers/common';
+import React from 'react';
 
 interface CustomSliderProps {
   settings: RootState['common']['settings'];
@@ -33,11 +33,11 @@ const CustomSlider = ({
   handleUpdateSettings,
 }: CustomSliderProps) => {
   const { min, max, step } = option.settings;
-  const [sliderVal, setSliderVal] = useState(
+  const [sliderVal, setSliderVal] = React.useState(
     parseFloat(String(settings[option.param] ?? 0))
   );
 
-  useEffect(() => {
+  React.useEffect(() => {
     setSliderVal(parseFloat(String(settings[option.param] ?? 0)));
   }, [settings, option.param]);
 
@@ -63,7 +63,7 @@ const CustomSlider = ({
   };
 
   return (
-    <Fragment>
+    <React.Fragment>
       <Form.Group inline>
         <Popup
           content="Reset Value"
@@ -107,7 +107,7 @@ const CustomSlider = ({
           }}
         />
       </div>
-    </Fragment>
+    </React.Fragment>
   );
 };
 

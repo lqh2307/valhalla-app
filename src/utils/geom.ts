@@ -1,16 +1,3 @@
-import { polygon, area } from '@turf/turf';
-
-export const calcArea = (feature: GeoJSON.Feature): number => {
-  try {
-    const polygonFeature = polygon(
-      (feature.geometry as GeoJSON.Polygon).coordinates
-    );
-    return area(polygonFeature) / 1000000;
-  } catch {
-    return -1;
-  }
-};
-
 export const isValidCoordinates = (
   lat: string | number,
   lng: string | number

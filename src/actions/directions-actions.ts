@@ -23,7 +23,6 @@ import {
 } from '../utils/nominatim';
 
 import {
-  VALHALLA_URL,
   buildDirectionsRequest,
   parseDirectionsGeometry,
 } from '../utils/valhalla';
@@ -43,6 +42,7 @@ import type {
   ThunkResult,
   ValhallaRouteResponse,
 } from '../common/types';
+import { Point } from '../types/Spatial';
 
 interface LatLng {
   lng: number;
@@ -63,7 +63,7 @@ interface FetchReverseGeocodeObject {
 
 interface FetchGeocodeObject {
   inputValue?: string;
-  lngLat?: [number, number];
+  lngLat?: Point;
   index: number;
 }
 
@@ -106,7 +106,7 @@ interface ZoomObject {
 }
 
 const serverMapping: Record<string, string> = {
-  [VALHALLA_URL!]: 'OSM',
+  [window.VALHALLA_URL!]: 'OSM',
 };
 
 export const makeRequest = (): ThunkResult => (dispatch, getState) => {
@@ -159,7 +159,7 @@ const fetchValhallaDirections =
         },
       };
       axios
-        .get<ValhallaRouteResponse>(VALHALLA_URL + '/route', config)
+        .get<ValhallaRouteResponse>(window.VALHALLA_URL + '/route', config)
         .then(({ data }) => {
           (data as ParsedDirectionsGeometry).decodedGeometry =
             parseDirectionsGeometry(data);
@@ -176,7 +176,7 @@ const fetchValhallaDirections =
           }
           dispatch(
             registerRouteResponse(
-              VALHALLA_URL!,
+              window.VALHALLA_URL!,
               data as ParsedDirectionsGeometry
             )
           );
@@ -187,12 +187,12 @@ const fetchValhallaDirections =
           if (response.data.error_code === 154) {
             error_msg += ` for ${valhallaRequest.json.costing}.`;
           }
-          dispatch(clearRoutes(VALHALLA_URL!));
+          dispatch(clearRoutes(window.VALHALLA_URL!));
           dispatch(
             sendMessage({
               type: 'warning',
               icon: 'warning',
-              description: `${serverMapping[VALHALLA_URL!]}: ${error_msg}`,
+              description: `${serverMapping[window.VALHALLA_URL!]}: ${error_msg}`,
               title: `${response.data.status}`,
             })
           );
@@ -269,11 +269,8 @@ export const fetchReverseGeocodePerma =
           );
         })
         .catch((error) => {
-          console.log(error);
+          console.error(error);
         });
-      // .finally(() => {
-      //   // always executed
-      // })
     };
 
 export const fetchReverseGeocode =
@@ -306,11 +303,8 @@ export const fetchReverseGeocode =
           );
         })
         .catch((error) => {
-          console.log(error);
+          console.error(error);
         });
-      // .finally(() => {
-      //   // always executed
-      // })
     };
 
 export const fetchGeocode =
@@ -338,9 +332,8 @@ export const fetchGeocode =
             dispatch(processGeocodeResponse(response.data, object.index));
           })
           .catch((error) => {
-            console.log(error);
+            console.error(error);
           })
-          .finally(() => { });
       }
     };
 
@@ -349,7 +342,7 @@ const processGeocodeResponse =
     data: NominationResponse,
     index: number,
     reverse?: boolean,
-    lngLat?: [number, number],
+    lngLat?: Point,
     permaLast?: boolean
   ): ThunkResult =>
     (dispatch) => {
@@ -420,7 +413,7 @@ export const doRemoveWaypoint =
         }
         waypoints = getState().directions.waypoints;
         if (getActiveWaypoints(waypoints).length < 2) {
-          dispatch(clearRoutes(VALHALLA_URL!));
+          dispatch(clearRoutes(window.VALHALLA_URL!));
         }
       }
       dispatch(updatePermalink());
@@ -434,7 +427,7 @@ export const isWaypoint =
         waypoints[index]?.geocodeResults.length &&
         waypoints[index]?.geocodeResults.length > 0
       ) {
-        dispatch(clearRoutes(VALHALLA_URL!));
+        dispatch(clearRoutes(window.VALHALLA_URL!));
       }
     };
 

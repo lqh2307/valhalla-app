@@ -2,6 +2,7 @@ import SettingsPanel from './controls/settings-panel';
 import { ToastContainer } from 'react-toastify';
 import MainControl from './controls';
 import { Box } from '@mui/material';
+import React from 'react';
 import Map from './map';
 
 export const App = () => {
@@ -11,7 +12,7 @@ export const App = () => {
       <MainControl />
       <SettingsPanel />
       <ToastContainer
-        position={"bottom-center"}
+        position={'bottom-center'}
         autoClose={5000}
         limit={1}
         hideProgressBar={false}
@@ -19,9 +20,9 @@ export const App = () => {
         closeOnClick={true}
         rtl={false}
         pauseOnFocusLoss={true}
-        draggable={"touch"}
+        draggable={'touch'}
         pauseOnHover={true}
-        theme={"light"}
+        theme={'light'}
       />
     </Box>
   );

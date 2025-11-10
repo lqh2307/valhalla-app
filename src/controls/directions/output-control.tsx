@@ -1,17 +1,16 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
 import { connect } from 'react-redux';
 import { Segment, Button, Icon } from 'semantic-ui-react';
 import { makeRequest } from '../../actions/directions-actions';
 import { downloadFile } from '../../actions/common-actions';
 import Summary from './summary';
 import Maneuvers from './maneuvers';
-import { VALHALLA_URL } from '../../utils/valhalla';
 import jsonFormat from 'json-format';
 import { jsonConfig } from '../../controls/settings-options';
 import type { RootState } from '../../store';
 import type { ThunkDispatch } from '@reduxjs/toolkit';
 import type { AnyAction } from 'redux';
 import type { DirectionsState } from '../../reducers/directions';
+import React from 'react';
 
 type ShowResultsState = Record<string | number, boolean>;
 
@@ -28,10 +27,10 @@ const OutputControl = ({
   successful,
   results,
 }: OutputControlProps) => {
-  const prevPropsRef = useRef<{ activeTab: number }>({ activeTab });
+  const prevPropsRef = React.useRef<{ activeTab: number }>({ activeTab });
 
-  const initializeShowResults = useCallback(() => {
-    const routeResult = results[VALHALLA_URL!];
+  const initializeShowResults = React.useCallback(() => {
+    const routeResult = results[window.VALHALLA_URL!];
     const data = routeResult?.data;
 
     let alternates: number[] = [];
@@ -46,11 +45,11 @@ const OutputControl = ({
     };
   }, [results]);
 
-  const [showResults, setShowResults] = useState<ShowResultsState>(() =>
+  const [showResults, setShowResults] = React.useState<ShowResultsState>(() =>
     initializeShowResults()
   );
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (
       prevPropsRef.current &&
       activeTab === 0 &&
@@ -60,22 +59,22 @@ const OutputControl = ({
     }
   }, [activeTab, dispatch]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     prevPropsRef.current = { activeTab };
   });
 
-  useEffect(() => {
+  React.useEffect(() => {
     setShowResults(initializeShowResults());
   }, [initializeShowResults]);
 
-  const showManeuvers = useCallback((idx: string | number) => {
+  const showManeuvers = React.useCallback((idx: string | number) => {
     setShowResults((prev) => ({
       ...prev,
       [idx]: !prev[idx],
     }));
   }, []);
 
-  const dateNow = useCallback((): string => {
+  const dateNow = React.useCallback((): string => {
     const dtNow = new Date();
     return (
       [dtNow.getMonth() + 1, dtNow.getDate(), dtNow.getFullYear()].join('/') +
@@ -84,9 +83,9 @@ const OutputControl = ({
     );
   }, []);
 
-  const exportToJson = useCallback(
+  const exportToJson = React.useCallback(
     (e: React.MouseEvent) => {
-      const routeResult = results[VALHALLA_URL!];
+      const routeResult = results[window.VALHALLA_URL!];
       const data = routeResult?.data;
       if (!data) return;
       const formattedData = jsonFormat(data, jsonConfig);
@@ -100,9 +99,9 @@ const OutputControl = ({
     [results, dateNow]
   );
 
-  const exportToGeoJson = useCallback(
+  const exportToGeoJson = React.useCallback(
     (e: React.MouseEvent) => {
-      const routeResult = results[VALHALLA_URL!];
+      const routeResult = results[window.VALHALLA_URL!];
       const data = routeResult?.data;
       const coordinates = data?.decodedGeometry;
       if (!coordinates) return;
@@ -129,7 +128,7 @@ const OutputControl = ({
     [results, dateNow]
   );
 
-  const routeResult = results[VALHALLA_URL!];
+  const routeResult = results[window.VALHALLA_URL!];
   if (!routeResult?.data) {
     return null;
   }

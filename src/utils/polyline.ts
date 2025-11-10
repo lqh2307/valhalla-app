@@ -1,3 +1,5 @@
+import { Point } from '../types/Spatial';
+
 export const decode = (str: string, precision: number = 6) => {
   // Handle invalid inputs
   if (!str || typeof str !== 'string') {
@@ -7,10 +9,10 @@ export const decode = (str: string, precision: number = 6) => {
   let index = 0;
   let lat = 0;
   let lng = 0;
-  const coordinates: [number, number][] = [];
+  const coordinates: Point[] = [];
   let shift = 0;
   let result = 0;
-  let byte: number | null = null;
+  let byte: number = null;
   let latitude_change: number;
   let longitude_change: number;
 

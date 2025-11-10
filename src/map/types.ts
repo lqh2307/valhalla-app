@@ -1,38 +1,35 @@
-import { MaplibreTerradrawControl } from "@watergis/maplibre-gl-terradraw";
+import { MaplibreTerradrawControl } from '@watergis/maplibre-gl-terradraw';
+import { Lnglat } from '../types/Spatial';
 
-export interface LastCenterStorageValue {
-  center: [number, number];
-  zoom_level: number;
-}
-
-export interface DrawControlProps {
-  position?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
-  onUpdate?: () => void;
-  controlRef?: React.RefObject<MaplibreTerradrawControl | null>;
-}
-
-export const controlPositions = {
-  topLeft: '.maplibregl-ctrl-top-left',
-  topRight: '.maplibregl-ctrl-top-right',
-  bottomLeft: '.maplibregl-ctrl-bottom-left',
-  bottomRight: '.maplibregl-ctrl-bottom-right',
-};
-
-export type CustomControlProps = {
-  position: keyof typeof controlPositions;
-};
-
-export interface ResetBoundsControlProps {
-  onStyleChange?: (style: string) => void;
-}
-
-export interface MapStyleOptionProps {
+export interface MapStyleLocalStorage {
   id: string;
-  label: string;
+  label?: string;
   style: string;
-  isSelected: boolean;
-  onSelect: (id: string) => void;
-  mapCenter?: { lng: number; lat: number };
+  image?: string;
+}
+
+export interface LastPositionLocalStorage {
+  style?: MapStyleLocalStorage;
+  center?: Lnglat;
   zoom?: number;
 }
 
+export interface DrawControlProps {
+  position?: ControlPosition;
+  onUpdate?: () => void;
+  controlRef?: React.RefObject<MaplibreTerradrawControl>;
+}
+
+export interface CustomControlProps {
+  position?: ControlPosition;
+}
+
+export type ControlPosition =
+  | 'top-left'
+  | 'top-right'
+  | 'bottom-left'
+  | 'bottom-right';
+
+export interface ResetBoundsControlProps {
+  onStyleChange?: (id: string) => void;
+}

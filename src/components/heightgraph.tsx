@@ -1,15 +1,16 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import * as d3 from 'd3';
 import { colorMappings } from '../utils/heightgraph';
 import makeResizable from '../utils/resizable';
 import type { FeatureCollection, GeoJsonProperties, Geometry } from 'geojson';
+import { WindowSize } from '../types/Window';
 
 interface HeightGraphProps {
   data: FeatureCollection<Geometry, GeoJsonProperties>[];
   width: number;
   height?: number;
   onExpand?: (expanded: boolean) => void;
-  onHighlight?: (index: number | null) => void;
+  onHighlight?: (index: number) => void;
 }
 
 const HeightGraph: React.FC<HeightGraphProps> = ({
@@ -19,13 +20,16 @@ const HeightGraph: React.FC<HeightGraphProps> = ({
   onExpand,
   onHighlight,
 }) => {
-  const svgRef = useRef<SVGSVGElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [dimensions, setDimensions] = useState({ width, height });
-  const resizerRef = useRef<{ destroy: () => void } | null>(null);
+  const svgRef = React.useRef<SVGSVGElement>(null);
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const [isExpanded, setIsExpanded] = React.useState<boolean>(false);
+  const [dimensions, setDimensions] = React.useState<WindowSize>({
+    width,
+    height,
+  });
+  const resizerRef = React.useRef<{ destroy: () => void }>(null);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!data || data.length === 0 || !svgRef.current) return;
 
     const svg = d3.select(svgRef.current);
@@ -241,19 +245,19 @@ const HeightGraph: React.FC<HeightGraphProps> = ({
     };
   }, [data, dimensions, onHighlight]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     setDimensions({ width, height });
   }, [width, height]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (containerRef.current && isExpanded) {
       resizerRef.current = makeResizable(containerRef.current, {
         handles: 'w, n, nw',
         minWidth: 380,
         minHeight: 140,
         applyInlineSize: false,
-        onResize: ({ width, height }) => {
-          setDimensions({ width, height });
+        onResize: (size: WindowSize) => {
+          setDimensions(size);
         },
         onStop: () => {
           // Clear inline styles

@@ -1,7 +1,6 @@
-import { useEffect, useCallback, useRef } from 'react';
 import { connect } from 'react-redux';
 import type { ThunkDispatch } from '@reduxjs/toolkit';
-import { Divider, type ButtonProps } from 'semantic-ui-react';
+import { type ButtonProps } from 'semantic-ui-react';
 
 import Waypoints from './waypoints';
 
@@ -26,6 +25,7 @@ import {
 import type { RootState } from '../../store';
 import type { Profile } from '../../reducers/common';
 import type { AnyAction } from 'redux';
+import React from 'react';
 
 interface DirectionsControlProps {
   profile: Profile;
@@ -43,7 +43,7 @@ const DirectionsControl = ({
   loading,
   dateTime,
 }: DirectionsControlProps) => {
-  const prevPropsRef = useRef<{
+  const prevPropsRef = React.useRef<{
     profile: Profile;
     dateTime: {
       type: number;
@@ -51,7 +51,7 @@ const DirectionsControl = ({
     };
   }>({ profile, dateTime });
 
-  const handleUpdateProfile = useCallback(
+  const handleUpdateProfile = React.useCallback(
     (event: React.MouseEvent<HTMLButtonElement>, data: ButtonProps) => {
       dispatch(updateProfile({ profile: data.valhalla_profile }));
       dispatch(resetSettings());
@@ -60,27 +60,27 @@ const DirectionsControl = ({
     [dispatch]
   );
 
-  const handleAddWaypoint = useCallback(() => {
+  const handleAddWaypoint = React.useCallback(() => {
     dispatch(doAddWaypoint());
   }, [dispatch]);
 
-  const handleRemoveWaypoints = useCallback(() => {
+  const handleRemoveWaypoints = React.useCallback(() => {
     dispatch(doRemoveWaypoint());
     dispatch(clearRoutes());
   }, [dispatch]);
 
-  const handleSettings = useCallback(() => {
+  const handleSettings = React.useCallback(() => {
     dispatch(doShowSettings());
   }, [dispatch]);
 
-  const handleDateTime = useCallback(
+  const handleDateTime = React.useCallback(
     (type, value) => {
       dispatch(doUpdateDateTime(type, value));
     },
     [dispatch]
   );
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (
       prevPropsRef.current &&
       (prevPropsRef.current.dateTime.type !== dateTime.type ||
@@ -91,7 +91,7 @@ const DirectionsControl = ({
     }
   }, [dateTime.type, dateTime.value, profile, dispatch]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     prevPropsRef.current = { profile, dateTime };
   });
 

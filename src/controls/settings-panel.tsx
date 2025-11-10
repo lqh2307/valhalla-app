@@ -1,17 +1,10 @@
-import React, {
-  Fragment,
-  useState,
-  useEffect,
-  useCallback,
-  useRef,
-} from 'react';
+import React from 'react';
 import * as R from 'ramda';
 import { connect } from 'react-redux';
 import { debounce } from 'throttle-debounce';
 import Drawer from 'react-modern-drawer';
 import 'react-modern-drawer/dist/index.css';
 import {
-  Divider,
   Form,
   Grid,
   Header,
@@ -41,6 +34,7 @@ import type { Profile } from '../reducers/common';
 import type { PossibleSettings } from '../common/types';
 import type { ThunkDispatch } from '@reduxjs/toolkit';
 import type { AnyAction } from 'redux';
+import { Divider } from '@mui/material';
 
 // Define the profile keys that have settings (excluding 'auto')
 type ProfileWithSettings = Exclude<Profile, 'auto'>;
@@ -60,25 +54,25 @@ const SettingsPanel = ({
   showSettings,
   activeTab,
 }: SettingsPanelProps) => {
-  const [generalSettings, setGeneralSettings] = useState<
+  const [generalSettings, setGeneralSettings] = React.useState<
     Record<number, boolean>
   >({});
-  const [extraSettings, setExtraSettings] = useState<Record<number, boolean>>(
-    {}
-  );
-  const [directionsSettings, setDirectionsSettings] = useState<
+  const [extraSettings, setExtraSettings] = React.useState<
     Record<number, boolean>
   >({});
-  const [copied, setCopied] = useState(false);
+  const [directionsSettings, setDirectionsSettings] = React.useState<
+    Record<number, boolean>
+  >({});
+  const [copied, setCopied] = React.useState(false);
 
-  const prevPropsRef = useRef<{
+  const prevPropsRef = React.useRef<{
     profile: ProfileWithSettings;
     settings: PossibleSettings;
     showSettings: boolean;
     activeTab: number;
   }>({ profile, settings, showSettings, activeTab });
 
-  const handleUpdateSettings = useCallback(
+  const handleUpdateSettings = React.useCallback(
     debounce(300, ({ name, value }) => {
       dispatch(
         updateSettings({
@@ -90,7 +84,7 @@ const SettingsPanel = ({
     [dispatch]
   );
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (
       prevPropsRef.current &&
       !R.equals(profile, prevPropsRef.current.profile)
@@ -121,7 +115,7 @@ const SettingsPanel = ({
     }
   }, [profile]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (
       prevPropsRef.current &&
       R.equals(profile, prevPropsRef.current.profile) &&
@@ -135,11 +129,11 @@ const SettingsPanel = ({
     }
   }, [settings, profile, activeTab, dispatch]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     prevPropsRef.current = { profile, settings, showSettings, activeTab };
   });
 
-  const handleShowSettings = useCallback(
+  const handleShowSettings = React.useCallback(
     (
       settingsType: 'generalSettings' | 'extraSettings' | 'directionsSettings',
       i: number
@@ -161,14 +155,14 @@ const SettingsPanel = ({
     []
   );
 
-  const handleColorCopy = useCallback(() => {
+  const handleColorCopy = React.useCallback(() => {
     setCopied(true);
     setTimeout(() => {
       setCopied(false);
     }, 1000);
   }, []);
 
-  const handleBikeTypeChange = useCallback(
+  const handleBikeTypeChange = React.useCallback(
     (e: React.SyntheticEvent, data: DropdownProps) => {
       const { value, name } = data;
       dispatch(
@@ -181,11 +175,11 @@ const SettingsPanel = ({
     [dispatch]
   );
 
-  const resetConfigSettings = useCallback(() => {
+  const resetConfigSettings = React.useCallback(() => {
     dispatch(resetSettings());
   }, [dispatch]);
 
-  const extractSettings = useCallback((profileParam, settingsParam) => {
+  const extractSettings = React.useCallback((profileParam, settingsParam) => {
     return JSON.stringify(filterProfileSettings(profileParam, settingsParam));
   }, []);
 
@@ -214,7 +208,7 @@ const SettingsPanel = ({
                   <Header as="h4">Extra Settings</Header>
                   {profile_settings[profile as ProfileWithSettings].numeric.map(
                     (option, key) => (
-                      <Fragment key={key}>
+                      <React.Fragment key={key}>
                         <div className="flex pointer">
                           <div
                             onClick={() =>
@@ -251,11 +245,11 @@ const SettingsPanel = ({
                             handleUpdateSettings={handleUpdateSettings}
                           />
                         ) : null}
-                      </Fragment>
+                      </React.Fragment>
                     )
                   )}
                   <Divider />
-                  <Fragment>
+                  <React.Fragment>
                     {profile_settings[
                       profile as ProfileWithSettings
                     ].boolean.map((option, key) => {
@@ -280,9 +274,9 @@ const SettingsPanel = ({
                         </div>
                       );
                     })}
-                  </Fragment>
+                  </React.Fragment>
                   <Divider />
-                  <Fragment>
+                  <React.Fragment>
                     {profile_settings[profile as ProfileWithSettings].enum.map(
                       (option, key) => {
                         return (
@@ -314,7 +308,7 @@ const SettingsPanel = ({
                         );
                       }
                     )}
-                  </Fragment>
+                  </React.Fragment>
                 </Form>
               </Grid.Column>
             )}
@@ -329,7 +323,7 @@ const SettingsPanel = ({
                 <Accordion>
                   {settings_general[profile as ProfileWithSettings].numeric.map(
                     (option, key) => (
-                      <Fragment key={key}>
+                      <React.Fragment key={key}>
                         <div className="flex pointer">
                           <div
                             onClick={() =>
@@ -366,7 +360,7 @@ const SettingsPanel = ({
                             handleUpdateSettings={handleUpdateSettings}
                           />
                         ) : null}
-                      </Fragment>
+                      </React.Fragment>
                     )
                   )}
                 </Accordion>
@@ -421,7 +415,7 @@ const SettingsPanel = ({
                 })}
                 {settings_general.all.numeric.map((option, key) => {
                   return (
-                    <Fragment key={key}>
+                    <React.Fragment key={key}>
                       <div className="flex pointer">
                         <div
                           onClick={() =>
@@ -458,7 +452,7 @@ const SettingsPanel = ({
                           handleUpdateSettings={handleUpdateSettings}
                         />
                       ) : null}
-                    </Fragment>
+                    </React.Fragment>
                   );
                 })}
               </Form>

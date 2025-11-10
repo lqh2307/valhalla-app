@@ -1,22 +1,24 @@
 import { Button, Popup, type ButtonProps } from 'semantic-ui-react';
-
-import { ReactComponent as BusSvg } from '../images/bus.svg';
-import { ReactComponent as ScooterSvg } from '../images/scooter.svg';
-import { ReactComponent as CarSvg } from '../images/car.svg';
-import { ReactComponent as TruckSvg } from '../images/truck.svg';
-import { ReactComponent as BikeSvg } from '../images/bike.svg';
-import { ReactComponent as PedestrianSvg } from '../images/pedestrian.svg';
-import { ReactComponent as MotorbikeSvg } from '../images/motorbike.svg';
 import type { Profile } from '../reducers/common';
+import React from 'react';
+import {
+  BikeScooter,
+  DirectionsBike,
+  DirectionsBus,
+  DirectionsCar,
+  DirectionsWalk,
+  LocalShipping,
+  TwoWheeler,
+} from '@mui/icons-material';
 
 const iconMap = {
-  truck: <TruckSvg />,
-  car: <CarSvg />,
-  bicycle: <BikeSvg />,
-  pedestrian: <PedestrianSvg />,
-  motor_scooter: <ScooterSvg />,
-  bus: <BusSvg />,
-  motorcycle: <MotorbikeSvg />,
+  truck: <LocalShipping />,
+  car: <DirectionsCar />,
+  bicycle: <DirectionsBike />,
+  pedestrian: <DirectionsWalk />,
+  motor_scooter: <BikeScooter />,
+  bus: <DirectionsBus />,
+  motorcycle: <TwoWheeler />,
 };
 
 interface ProfilePickerProps {

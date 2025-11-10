@@ -29,10 +29,10 @@ export type Profile =
 
 export interface Message {
   receivedAt: number;
-  type: 'info' | 'warning' | 'error' | 'success' | null;
-  icon: string | null;
-  topic: string | null;
-  description: string | null;
+  type: 'info' | 'warning' | 'error' | 'success';
+  icon: string;
+  topic: string;
+  description: string;
 }
 
 const initialState = {

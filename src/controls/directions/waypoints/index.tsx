@@ -56,7 +56,7 @@ const Waypoints = ({ directions, dispatch }: WaypointsProps) => {
     setVisible(true);
 
     if (directions.waypoints.length === 0) {
-      Array(2)
+      Array(1)
         .fill(null)
         .map(() => dispatch(doAddWaypoint()));
     }
@@ -80,8 +80,6 @@ const Waypoints = ({ directions, dispatch }: WaypointsProps) => {
     [dispatch, directions.waypoints]
   );
 
-  const { waypoints } = directions;
-
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <Droppable droppableId="droppable">
@@ -93,7 +91,7 @@ const Waypoints = ({ directions, dispatch }: WaypointsProps) => {
               ref={provided.innerRef}
               style={{ minHeight: '22rem' }}
             >
-              {waypoints.map((wp, index) => (
+              {directions.waypoints.map((wp, index) => (
                 <Draggable key={wp.id} draggableId={wp.id} index={index}>
                   {(provided_inner, snapshot_inner) => (
                     <div

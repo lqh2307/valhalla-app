@@ -1,14 +1,15 @@
 import type { RootState } from '../store';
 import type { AnyAction } from 'redux';
 import type { ThunkAction } from '@reduxjs/toolkit';
+import { Point } from '../types/Spatial';
 
 export interface ActiveWaypoint {
   title: string;
   description?: string;
   selected?: boolean;
-  addresslnglat?: [number, number];
-  sourcelnglat?: [number, number];
-  displaylnglat: [number, number];
+  addresslnglat?: Point;
+  sourcelnglat?: Point;
+  displaylnglat: Point;
   key: number;
   addressindex: number;
 }

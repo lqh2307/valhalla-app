@@ -14,8 +14,6 @@ import {
   ZOOM_TO_MNV,
   UPDATE_INCLINE_DECLINE,
 } from '../actions/types';
-
-import { VALHALLA_URL } from '../utils/valhalla';
 import type { AnyAction } from 'redux';
 import type { ActiveWaypoint, ParsedDirectionsGeometry } from '../common/types';
 
@@ -51,7 +49,7 @@ export interface DirectionsState {
   highlightSegment: HighlightSegment;
   waypoints: Waypoint[];
   zoomObj: ZoomObj;
-  selectedAddresses: string | (Waypoint | null)[];
+  selectedAddresses: string | Waypoint[];
   results: Record<string, RouteResult>;
   inclineDeclineTotal?: InclineDeclineTotal;
 }
@@ -71,7 +69,7 @@ const initialState: DirectionsState = {
   },
   selectedAddresses: '',
   results: {
-    [VALHALLA_URL!]: {
+    [window.VALHALLA_URL!]: {
       data: {},
       show: {
         '-1': true,
@@ -153,10 +151,10 @@ export const directions = (
         waypoints: state.waypoints.map((waypoint, i) =>
           i === action.payload.index
             ? {
-              ...waypoint,
-              isFetching: false,
-              geocodeResults: action.payload.addresses,
-            }
+                ...waypoint,
+                isFetching: false,
+                geocodeResults: action.payload.addresses,
+              }
             : waypoint
         ),
       };
@@ -173,7 +171,7 @@ export const directions = (
 
     case UPDATE_TEXTINPUT:
       // Catch array of selectedAddress from all waypoints
-      const selectedAddresses: (Waypoint | null)[] = [];
+      const selectedAddresses: Waypoint[] = [];
       state.waypoints.forEach((waypoint) => {
         waypoint.geocodeResults.forEach((result, i) => {
           selectedAddresses.push(
@@ -187,14 +185,14 @@ export const directions = (
         waypoints: state.waypoints.map((waypoint, i) =>
           i === action.payload.index
             ? {
-              ...waypoint,
-              userInput: action.payload.inputValue,
-              geocodeResults: waypoint.geocodeResults.map((result, j) =>
-                j === action.payload.addressindex
-                  ? { ...result, selected: true }
-                  : { ...result, selected: false }
-              ),
-            }
+                ...waypoint,
+                userInput: action.payload.inputValue,
+                geocodeResults: waypoint.geocodeResults.map((result, j) =>
+                  j === action.payload.addressindex
+                    ? { ...result, selected: true }
+                    : { ...result, selected: false }
+                ),
+              }
             : waypoint
         ),
       };
@@ -215,10 +213,10 @@ export const directions = (
         waypoints: state.waypoints.map((waypoint, i) =>
           i === action.payload.index
             ? {
-              ...waypoint,
-              userInput: '',
-              geocodeResults: [],
-            }
+                ...waypoint,
+                userInput: '',
+                geocodeResults: [],
+              }
             : waypoint
         ),
       };

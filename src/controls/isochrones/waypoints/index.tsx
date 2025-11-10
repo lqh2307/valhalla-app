@@ -1,7 +1,15 @@
-import { useState, useCallback, useMemo } from 'react';
 import { connect } from 'react-redux';
 
-import { Search, Form, Popup, Icon, Label, Accordion, SearchProps, SearchResultProps } from 'semantic-ui-react';
+import {
+  Search,
+  Form,
+  Popup,
+  Icon,
+  Label,
+  Accordion,
+  SearchProps,
+  SearchResultProps,
+} from 'semantic-ui-react';
 import { Slider } from '@mui/material';
 
 import { Settings } from '../settings';
@@ -28,6 +36,7 @@ import type { RootState } from '../../../store';
 import type { AnyAction } from 'redux';
 import type { ThunkDispatch } from '@reduxjs/toolkit';
 import type { IsochroneState } from '../../../reducers/isochrones';
+import React from 'react';
 
 interface WaypointsProps {
   isochrones: IsochroneState;
@@ -36,10 +45,10 @@ interface WaypointsProps {
 }
 
 const Waypoints = ({ isochrones, dispatch, use_geocoding }: WaypointsProps) => {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [open, setOpen] = useState(false);
+  const [activeIndex, setActiveIndex] = React.useState(0);
+  const [open, setOpen] = React.useState(false);
 
-  const fetchGeocodeResults = useMemo(
+  const fetchGeocodeResults = React.useMemo(
     () =>
       debounce(200, (e) => {
         const { userInput } = isochrones;
@@ -68,7 +77,7 @@ const Waypoints = ({ isochrones, dispatch, use_geocoding }: WaypointsProps) => {
     [isochrones, use_geocoding, dispatch]
   );
 
-  const handleIsoSliderUpdateSettings = useMemo(
+  const handleIsoSliderUpdateSettings = React.useMemo(
     () =>
       debounce(
         10,
@@ -96,12 +105,12 @@ const Waypoints = ({ isochrones, dispatch, use_geocoding }: WaypointsProps) => {
     [dispatch]
   );
 
-  const makeIsochronesRequestDebounced = useMemo(
+  const makeIsochronesRequestDebounced = React.useMemo(
     () => debounce(100, () => dispatch(makeIsochronesRequest())),
     [dispatch]
   );
 
-  const handleClick = useCallback(
+  const handleClick = React.useCallback(
     (e, titleProps) => {
       const { index } = titleProps;
       const newIndex = activeIndex === index ? -1 : index;
@@ -110,18 +119,18 @@ const Waypoints = ({ isochrones, dispatch, use_geocoding }: WaypointsProps) => {
     [activeIndex]
   );
 
-  const handleSearchChange = useCallback(
+  const handleSearchChange = React.useCallback(
     (event: any, data: SearchProps) => {
       dispatch(updateTextInput({ userInput: data.value as string }));
     },
     [dispatch]
   );
 
-  const handleRemoveIsos = useCallback(() => {
+  const handleRemoveIsos = React.useCallback(() => {
     dispatch(clearIsos());
   }, [dispatch]);
 
-  const handleResultSelect = useCallback(
+  const handleResultSelect = React.useCallback(
     (e, { result }) => {
       setOpen(false);
 
@@ -137,7 +146,7 @@ const Waypoints = ({ isochrones, dispatch, use_geocoding }: WaypointsProps) => {
     [dispatch, makeIsochronesRequestDebounced]
   );
 
-  const handleIntervalChange = useCallback(
+  const handleIntervalChange = React.useCallback(
     (e, { value }) => {
       const { maxRange } = isochrones;
 
@@ -156,7 +165,7 @@ const Waypoints = ({ isochrones, dispatch, use_geocoding }: WaypointsProps) => {
     [isochrones, handleIsoSliderUpdateSettings]
   );
 
-  const handleDenoiseChange = useCallback(
+  const handleDenoiseChange = React.useCallback(
     (e, { value }) => {
       value = isNaN(parseFloat(value))
         ? settingsInit.denoise
@@ -172,7 +181,7 @@ const Waypoints = ({ isochrones, dispatch, use_geocoding }: WaypointsProps) => {
     [handleIsoSliderUpdateSettings]
   );
 
-  const handleGeneralizeChange = useCallback(
+  const handleGeneralizeChange = React.useCallback(
     (e, { value }) => {
       value = isNaN(parseInt(value))
         ? settingsInit.generalize
@@ -188,7 +197,7 @@ const Waypoints = ({ isochrones, dispatch, use_geocoding }: WaypointsProps) => {
     [handleIsoSliderUpdateSettings]
   );
 
-  const handleRangeChange = useCallback(
+  const handleRangeChange = React.useCallback(
     (e, { value }) => {
       value = isNaN(parseInt(value)) ? 0 : parseInt(value);
       if (value > 120) {
@@ -208,7 +217,7 @@ const Waypoints = ({ isochrones, dispatch, use_geocoding }: WaypointsProps) => {
     [handleIsoSliderUpdateSettings, makeIsochronesRequestDebounced]
   );
 
-  const resultRenderer = useCallback(
+  const resultRenderer = React.useCallback(
     (data: SearchResultProps) => (
       <div data-testid="search-result" className="flex-column">
         <div>
@@ -218,7 +227,11 @@ const Waypoints = ({ isochrones, dispatch, use_geocoding }: WaypointsProps) => {
           <div>
             <Icon disabled name="linkify" />
             <span className="description b">
-              <a target="_blank" rel="noopener noreferrer" href={data.description}>
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href={data.description}
+              >
                 OSM Link
               </a>
             </span>
